@@ -1,3 +1,9 @@
+## Written by slhmy
+
+If you are visiting this pages, then you should probably move to [slhmy's Blog](https://slhmy-zzy.netlify.app/).
+
+This page will be updated after my blog is prepared.
+
 ## Welcome to GitHub Pages
 
 You can use the [editor on GitHub](https://github.com/slhmy/slhmy.github.io/edit/main/index.md) to maintain and preview the content for your website in Markdown files.
