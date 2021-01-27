@@ -1,6 +1,6 @@
 ## Written by slhmy
 
-If you are visiting this pages, then you should probably move to [slhmy's Blog](https://slhmy-zzy.netlify.app/).
+If you are visiting this pages, then you should probably move to [slhmy's Blog](https://slhmy.netlify.app/).
 
 This page will be updated after my blog is prepared.
 
