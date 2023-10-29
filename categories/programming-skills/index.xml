@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Programing Skills on Slhmy's blog</title><link>https://slhmy.github.io/categories/programming-skills/</link><description>Recent content in Programing Skills on Slhmy's blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Sun, 06 Nov 2022 10:45:00 +0800</lastBuildDate><atom:link href="https://slhmy.github.io/categories/programming-skills/index.xml" rel="self" type="application/rss+xml"/><item><title>Usage of @emotion/styled</title><link>https://slhmy.github.io/p/usage-of-emotion-styled/</link><pubDate>Sun, 06 Nov 2022 10:45:00 +0800</pubDate><guid>https://slhmy.github.io/p/usage-of-emotion-styled/</guid><description>&lt;h2 id="前言">前言&lt;/h2>
+&lt;p>前端我算是那种完全是半路出家的，
+所以尽管我现在已经了解了部分前端框架的运作原理，我发现在实际使用当中，
+我还是非常依赖一些先有的框架来完成所有的事情。
+这会让我在面对一些需要高度定制的模块的时候显得比较被动。&lt;/p>
+&lt;p>但实际上，有些模块如果用较为原始的方法（比如：div+CSS），是比较简单的。
+今天就开一个文章，来记录一下我在工作中接触到的&lt;a class="link" href="https://emotion.sh/docs/styled" target="_blank" rel="noopener"
+>@emotion/styled&lt;/a>这个组件。&lt;/p>
+&lt;h2 id="使用">使用&lt;/h2>
+&lt;p>仔细看了一下，发现上面的链接里说的还是蛮清楚的。
+好像也没有额外多的用法了&amp;hellip;所以这块的话，有想到什么的时候再来更新吧！&lt;/p></description></item><item><title>Event Publish Model in Javascript</title><link>https://slhmy.github.io/p/event-publish-model-in-javascript/</link><pubDate>Sun, 25 Sep 2022 17:20:00 +0800</pubDate><guid>https://slhmy.github.io/p/event-publish-model-in-javascript/</guid><description>&lt;h2 id="前言--场景描述">前言 &amp;amp; 场景描述&lt;/h2>
+&lt;p>最近开始上班了，岗位是全栈（SDE），我号称是会写一些React，于是接到的第一个任务就是去搞前端。
+虽然项目的前端架构看上去比较老旧，是组件式的React，不过经理允许我按照喜好写函数式的，所以本来推进的还挺顺利。
+后来页面架子搭了一点需求之后，经理跟我沟通了一个需求，说是要把原来某个阶段打的log放到组件里显示出来。&lt;/p>
+&lt;p>简单来说是这样一个场景：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Javascript" data-lang="Javascript">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">function&lt;/span> &lt;span class="nx">xxxPage&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">useEffect&lt;/span>&lt;span class="p">(()&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">xxxOperation&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">operationListener&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>operationListener&lt;/code>会在这个页面启动后，监听某个后台任务，然后用&lt;code>console.log&lt;/code>打印在控制台里。&lt;/p>
+&lt;p>&lt;code>operationListener&lt;/code>的大致情况是这样的：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Javascript" data-lang="Javascript">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">class&lt;/span> &lt;span class="nx">xxxOperation&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">function&lt;/span> &lt;span class="nx">operationListener&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// Listen some msg
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">while&lt;/span> &lt;span class="nx">hasMsg&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">msg&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">type&lt;/span> &lt;span class="o">===&lt;/span> &lt;span class="nx">xxx&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// Listen some msg
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>要求是在&lt;code>xxxPage&lt;/code>里动态地把这些log在某处展示出来。
+第一次见这种情况，我上来就没了思路，后来就听到经理嘴里蹦出什么event publish啥的，就去网上搜了一下。&lt;/p>
+&lt;h2 id="解读">解读&lt;/h2>
+&lt;p>我查到的是这篇博客：&lt;a class="link" href="https://www.jianshu.com/p/24586fda48b8" target="_blank" rel="noopener"
+>JavaScript设计模式之发布订阅模式(Publish/Subscribe)&lt;/a>，觉得还是比较好理解的。&lt;/p>
+&lt;p>我把这篇文章中的一些内容运用到上文的场景中大概就变成了下面这样：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Javascript" data-lang="Javascript">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">function&lt;/span> &lt;span class="nx">xxxPage&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">var&lt;/span> &lt;span class="nx">Weather&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">list&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">[],&lt;/span> &lt;span class="c1">// 缓存列表
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">listen&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="kd">function&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">fn&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="c1">// 增加订阅者
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">list&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">push&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">fn&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">publish&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="kd">function&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="c1">// 发布消息
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">for&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">var&lt;/span> &lt;span class="nx">i&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="nx">fn&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="nx">fn&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">list&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">];)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">fn&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">apply&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">this&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="nx">arguments&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">useEffect&lt;/span>&lt;span class="p">(()&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">Weather&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">listen&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">function&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">weather&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">wind&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;天气：&amp;#39;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="nx">weather&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;风力：&amp;#39;&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="nx">wind&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 利用useState等钩子更新元素
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">xxxOperation&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">operationListener&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">Weather&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span> &lt;span class="p">[]);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>之后我们在&lt;code>operationListener&lt;/code>当中调用&lt;code>publish&lt;/code>就好。
+感觉这里还是运用到了一种闭包或者说是函数传递的思想，整个监听和发布行为是在主体代码中设定的。
+需要注意的是，&lt;code>useEffect&lt;/code>需要正确的设定触发条件，否则很容易产生多次调用。&lt;/p></description></item><item><title>Linux System Cheat List</title><link>https://slhmy.github.io/p/linux-system-cheat-list/</link><pubDate>Fri, 09 Sep 2022 15:48:00 +0800</pubDate><guid>https://slhmy.github.io/p/linux-system-cheat-list/</guid><description>&lt;h2 id="前言">前言&lt;/h2>
+&lt;p>这个“小抄”实际上是一个小记的模式，指我遇到什么相关的问题会在这里记录一下。&lt;/p>
+&lt;h3 id="whats-the-meaning-of-the-return-value-of-fn-kill">What&amp;rsquo;s the meaning of the return value of &lt;code>fn kill()&lt;/code>?&lt;/h3>
+&lt;blockquote>
+&lt;p>On success (at least one signal was sent), zero is returned. On error, -1 is returned, and errno is set appropriately.&lt;/p>
+&lt;/blockquote></description></item><item><title>Golang Production and Consumption Controller Model</title><link>https://slhmy.github.io/p/go-pc-control-model/</link><pubDate>Sat, 03 Sep 2022 11:09:00 +0800</pubDate><guid>https://slhmy.github.io/p/go-pc-control-model/</guid><description>&lt;img src="https://slhmy.github.io/p/go-pc-control-model/cover.png" alt="Featured image of post Golang Production and Consumption Controller Model" />&lt;p>&lt;strong>前情提要是这样的：&lt;/strong>&lt;/p>
+&lt;p>我昨天参加了我非常喜欢的某公司的全栈开发工程师的面试，
+在介绍了我各种过往奇奇怪怪的（真的是非常奇怪的，面试官听了以后直皱眉😂）项目之后，
+面试官开始考核我的一些实战能力。
+然后上来的第一道代码设计的题目就把我考到了，&lt;strong>要我用协程实现多生产多消费，并且能控制协程创建退出&lt;/strong>。&lt;/p>
+&lt;p>可能是我Golang只接触了一个月左右的时间，
+虽然之前确实有一次被考到&lt;code>channel&lt;/code>的用法（但复盘的时候也就是简单补习了一下&lt;code>make channel&lt;/code>）。
+这次上来直接动手要写代码，还是很多反应不过来，我直接就寄了&amp;hellip;
+查了一会&lt;code>channel&lt;/code>的用法，后面憋出几行又发现为了不让进程过早退出还要使用&lt;code>waitGroup&lt;/code>这些😇。
+然后上面说到的模型确实比较重要的，毕竟我简历上也吹嘘自己掌握各种异步任务设计&amp;hellip;
+结果就是啪啪打脸。&lt;/p>
+&lt;p>于是在这场被虐的非常惨烈的面试之后，我决定把这样一个生产消费模型好好补一下。
+最后补习完了以后发现，大量的内容还是跟Golang的&lt;code>channel&lt;/code>用法有关，那么这篇文章就主要对其做一个梳理。&lt;/p>
+&lt;p>&lt;strong>相关完整代码&lt;/strong>：&lt;a class="link" href="https://github.com/slhmy/golang-programming-models/tree/main/producer-consumer-control" target="_blank" rel="noopener"
+>producer-consumer-control&lt;/a>&lt;/p>
+&lt;h2 id="basics">Basics&lt;/h2>
+&lt;p>我不会讲太多，因为很多地方可以查到，介绍的肯定也更详细。
+这里只是提供一个较快的了解。&lt;/p>
+&lt;h3 id="channel">channel&lt;/h3>
+&lt;p>首先对channel需要掌握它的类型声明、创建和操作方法。&lt;/p>
+&lt;h4 id="channel的类型声明">channel的类型声明&lt;/h4>
+&lt;p>在Golang当中，我们通过&lt;code>[VARIABLE NAME] &amp;lt;-chan | chan | chan&amp;lt;- [TYPE]&lt;/code>这样的句式来声明一个&lt;code>channel&lt;/code>和它内部的数据类型。
+这里&lt;code>chan&lt;/code>有点像一个前缀的修饰词，可能由于是关键字的原因，在用法上和普通泛型上有区分。
+我认为关键是要使用&lt;strong>象形&lt;/strong>的记忆方式，把&lt;code>chan&lt;/code>本身就想象成一个管道，你可以在&lt;code>chan&lt;/code>的两侧用&lt;code>&amp;lt;-&lt;/code>来标记&lt;code>chan&lt;/code>在这个作用域中的可以使用的端口是写端还是读端，没有标记时代表允许双端的操作&lt;/p>
+&lt;h4 id="channel的创建">channel的创建&lt;/h4>
+&lt;p>通过&lt;code>make&lt;/code>我们可以创建一个&lt;code>channel&lt;/code>，这里值得注意的是&lt;code>make&lt;/code>分配的容量是根据对象的原子个数分配的。
+像&lt;code>string&lt;/code>类型，分配的是字符串的长度，这里是容易理解错的。
+但如果你是创建的一个&lt;code>struct&lt;/code>，那分配的容量是“多少个struct”。&lt;/p>
+&lt;h4 id="channel的操作">channel的操作&lt;/h4>
+&lt;p>&lt;code>chan&lt;/code>最基本的操作就是写值和取值操作。&lt;/p>
+&lt;p>写值的语法是&lt;code>[CHANNEL] &amp;lt;- [VARIABLE] | [VALUE]&lt;/code>，是象形的操作方式。&lt;/p>
+&lt;p>取值的语法是&lt;code>[VARIABLE] := &amp;lt;-[CHANNEL]&lt;/code>，代表从写端取值，
+此外还有和&lt;code>range&lt;/code>一起使用的一些语法糖（这里就不过多介绍了）。&lt;/p>
+&lt;h3 id="context">Context&lt;/h3>
+&lt;p>&lt;code>Context&lt;/code>的中文含义是上下文，这类设计其实在很多服务框架中有做到。
+像在Rust的一些Web框架中，会有&lt;code>app.data&lt;/code>的设计，这样做的目的主要就是方便线程/协程之间实现数据的共享。&lt;/p>
+&lt;p>在Golang当中，我认为&lt;code>Context&lt;/code>也起到了类似的作用。
+但在这样一个功能的基础上，&lt;code>Context&lt;/code>还提供了一些特殊字段和控制方法，用来实现对协程的控制。
+最重要的一种用法如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Golang" data-lang="Golang">&lt;span class="line">&lt;span class="cl">&lt;span class="k">select&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">case&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="nx">ctx&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Done&lt;/span>&lt;span class="p">():&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">default&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// normal works when this goroutine is up
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>我们通过&lt;code>ctx.Done&lt;/code>这个管道来判断协程是否需要终止，
+这个管道的消息可以通过设置&lt;code>TimeOut&lt;/code>或者手动&lt;code>cancel&lt;/code>等方法来发送。
+具体可以查阅相关的资料。&lt;/p>
+&lt;h2 id="practice">Practice&lt;/h2>
+&lt;p>最后我们来提一下多生产多消费这个模型的实践。
+思路其实很简单，我们需要创建一个&lt;code>channel&lt;/code>来作为消息队列，另外我们还需要一个&lt;code>Context&lt;/code>来控制协程的退出。&lt;/p>
+&lt;p>我们首先定义消息的格式，并准备&lt;code>channel&lt;/code>和&lt;code>Context&lt;/code>。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Golang" data-lang="Golang">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">type&lt;/span> &lt;span class="nx">Message&lt;/span> &lt;span class="kd">struct&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">Content&lt;/span> &lt;span class="kt">string&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">var&lt;/span> &lt;span class="nx">ctx&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">cancel&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">WithCancel&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Background&lt;/span>&lt;span class="p">())&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">dataChannel&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nb">make&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">chan&lt;/span> &lt;span class="nx">Message&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">countChannel&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nb">make&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">chan&lt;/span> &lt;span class="kt">int&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>dataChannel&lt;/code>是用来生产的消息队列，&lt;code>countChannel&lt;/code>是生产者之间用来协同控制消息号的。
+由于&lt;code>countChannel&lt;/code>的读写会发生在一个生产者当中，我们需要设置一个大小为1的缓冲，
+每次生产者进行生产之前，生产者会先读取缓冲中的值，并把最新的消息号更新。&lt;/p>
+&lt;p>最后结合&lt;code>Context&lt;/code>的基本用法，我们得到的核心逻辑如下：&lt;/p>
+&lt;h3 id="producer核心逻辑">Producer核心逻辑&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Golang" data-lang="Golang">&lt;span class="line">&lt;span class="cl">&lt;span class="k">select&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Handle &amp;lt;-ctx.Done()
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">case&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="nx">ctx&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Done&lt;/span>&lt;span class="p">():&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Producer_%d quit\n&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">id&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">default&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// Get message count
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">Count&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="nx">countCh&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">Count&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="mi">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">countCh&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span> &lt;span class="nx">Count&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// Produce
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">dataCh&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span> &lt;span class="nx">Message&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">Content&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Sprintf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Producer_%d sending message_%d&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">id&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">Count&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">time&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Sleep&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="nx">time&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Second&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="consumer核心逻辑">Consumer核心逻辑&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Golang" data-lang="Golang">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Consume
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="nx">data&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="nx">dataCh&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Consumer_%d get message: %s\n&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">id&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">data&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Content&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item><item><title>React Basics</title><link>https://slhmy.github.io/p/react-hooks/</link><pubDate>Wed, 31 Aug 2022 19:00:00 +0800</pubDate><guid>https://slhmy.github.io/p/react-hooks/</guid><description>&lt;h2 id="hooks">Hooks&lt;/h2>
+&lt;p>&lt;a class="link" href="https://zhuanlan.zhihu.com/p/443264124" target="_blank" rel="noopener"
+>【知乎】react-hooks原理解析&lt;/a>&lt;/p>
+&lt;p>常见钩子：&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>useState&lt;/code>&lt;/li>
+&lt;li>&lt;code>useEffect&lt;/code>&lt;/li>
+&lt;li>&lt;code>useContext&lt;/code>&lt;/li>
+&lt;li>&lt;code>useReducer&lt;/code>&lt;/li>
+&lt;li>&lt;code>useRef&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;p>生命周期：挂载 &amp;ndash;&amp;gt; 更新 &amp;ndash;&amp;gt; 卸载&lt;/p>
+&lt;h2 id="virtual-dom">Virtual Dom&lt;/h2>
+&lt;p>参考链接：
+&lt;a class="link" href="https://zhuanlan.zhihu.com/p/462727885" target="_blank" rel="noopener"
+>【知乎】剖析React核心设计原理&amp;ndash;Virtual Dom&lt;/a>&lt;/p>
+&lt;h3 id="virtual-dom的作用">Virtual Dom的作用&lt;/h3>
+&lt;p>Virtual Dom是对HTML Dom的JavaScript形式的封装&lt;/p>
+&lt;blockquote>
+&lt;p>Virtual DOM是一种编程方式，它以对象的形式保存在内存中，它描述了我们DOM的必要信息，并且用类似react-dom等模块与真实DOM同步，这一过程也叫协调(reconciler)，这种方式可以声明式的渲染相应的ui状态，让我们从DOM操作中解放出来&lt;/p>
+&lt;/blockquote>
+&lt;p>我理解有了Virtual Dom之后，弱化了开发者对于原生HTML Dom的感知，这样更方便我们在JavaScript层面去修改页面的动态元素。&lt;/p></description></item></channel></rss>

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Javascript on Slhmy's blog</title><link>https://slhmy.github.io/tags/javascript/</link><description>Recent content in Javascript on Slhmy's blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Sun, 06 Nov 2022 10:45:00 +0800</lastBuildDate><atom:link href="https://slhmy.github.io/tags/javascript/index.xml" rel="self" type="application/rss+xml"/><item><title>Usage of @emotion/styled</title><link>https://slhmy.github.io/p/usage-of-emotion-styled/</link><pubDate>Sun, 06 Nov 2022 10:45:00 +0800</pubDate><guid>https://slhmy.github.io/p/usage-of-emotion-styled/</guid><description>&lt;h2 id="前言">前言&lt;/h2>
+&lt;p>前端我算是那种完全是半路出家的，
+所以尽管我现在已经了解了部分前端框架的运作原理，我发现在实际使用当中，
+我还是非常依赖一些先有的框架来完成所有的事情。
+这会让我在面对一些需要高度定制的模块的时候显得比较被动。&lt;/p>
+&lt;p>但实际上，有些模块如果用较为原始的方法（比如：div+CSS），是比较简单的。
+今天就开一个文章，来记录一下我在工作中接触到的&lt;a class="link" href="https://emotion.sh/docs/styled" target="_blank" rel="noopener"
+>@emotion/styled&lt;/a>这个组件。&lt;/p>
+&lt;h2 id="使用">使用&lt;/h2>
+&lt;p>仔细看了一下，发现上面的链接里说的还是蛮清楚的。
+好像也没有额外多的用法了&amp;hellip;所以这块的话，有想到什么的时候再来更新吧！&lt;/p></description></item><item><title>Event Publish Model in Javascript</title><link>https://slhmy.github.io/p/event-publish-model-in-javascript/</link><pubDate>Sun, 25 Sep 2022 17:20:00 +0800</pubDate><guid>https://slhmy.github.io/p/event-publish-model-in-javascript/</guid><description>&lt;h2 id="前言--场景描述">前言 &amp;amp; 场景描述&lt;/h2>
+&lt;p>最近开始上班了，岗位是全栈（SDE），我号称是会写一些React，于是接到的第一个任务就是去搞前端。
+虽然项目的前端架构看上去比较老旧，是组件式的React，不过经理允许我按照喜好写函数式的，所以本来推进的还挺顺利。
+后来页面架子搭了一点需求之后，经理跟我沟通了一个需求，说是要把原来某个阶段打的log放到组件里显示出来。&lt;/p>
+&lt;p>简单来说是这样一个场景：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Javascript" data-lang="Javascript">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">function&lt;/span> &lt;span class="nx">xxxPage&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">useEffect&lt;/span>&lt;span class="p">(()&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">xxxOperation&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">operationListener&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>operationListener&lt;/code>会在这个页面启动后，监听某个后台任务，然后用&lt;code>console.log&lt;/code>打印在控制台里。&lt;/p>
+&lt;p>&lt;code>operationListener&lt;/code>的大致情况是这样的：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Javascript" data-lang="Javascript">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">class&lt;/span> &lt;span class="nx">xxxOperation&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">function&lt;/span> &lt;span class="nx">operationListener&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// Listen some msg
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">while&lt;/span> &lt;span class="nx">hasMsg&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">msg&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">type&lt;/span> &lt;span class="o">===&lt;/span> &lt;span class="nx">xxx&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// Listen some msg
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>要求是在&lt;code>xxxPage&lt;/code>里动态地把这些log在某处展示出来。
+第一次见这种情况，我上来就没了思路，后来就听到经理嘴里蹦出什么event publish啥的，就去网上搜了一下。&lt;/p>
+&lt;h2 id="解读">解读&lt;/h2>
+&lt;p>我查到的是这篇博客：&lt;a class="link" href="https://www.jianshu.com/p/24586fda48b8" target="_blank" rel="noopener"
+>JavaScript设计模式之发布订阅模式(Publish/Subscribe)&lt;/a>，觉得还是比较好理解的。&lt;/p>
+&lt;p>我把这篇文章中的一些内容运用到上文的场景中大概就变成了下面这样：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Javascript" data-lang="Javascript">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">function&lt;/span> &lt;span class="nx">xxxPage&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">var&lt;/span> &lt;span class="nx">Weather&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">list&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">[],&lt;/span> &lt;span class="c1">// 缓存列表
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">listen&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="kd">function&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">fn&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="c1">// 增加订阅者
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">list&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">push&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">fn&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">publish&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="kd">function&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="c1">// 发布消息
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">for&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">var&lt;/span> &lt;span class="nx">i&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="nx">fn&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="nx">fn&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">list&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">];)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">fn&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">apply&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">this&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="nx">arguments&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">useEffect&lt;/span>&lt;span class="p">(()&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">Weather&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">listen&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">function&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">weather&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">wind&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;天气：&amp;#39;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="nx">weather&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;风力：&amp;#39;&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="nx">wind&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 利用useState等钩子更新元素
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">xxxOperation&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">operationListener&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">Weather&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span> &lt;span class="p">[]);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>之后我们在&lt;code>operationListener&lt;/code>当中调用&lt;code>publish&lt;/code>就好。
+感觉这里还是运用到了一种闭包或者说是函数传递的思想，整个监听和发布行为是在主体代码中设定的。
+需要注意的是，&lt;code>useEffect&lt;/code>需要正确的设定触发条件，否则很容易产生多次调用。&lt;/p></description></item><item><title>React Basics</title><link>https://slhmy.github.io/p/react-hooks/</link><pubDate>Wed, 31 Aug 2022 19:00:00 +0800</pubDate><guid>https://slhmy.github.io/p/react-hooks/</guid><description>&lt;h2 id="hooks">Hooks&lt;/h2>
+&lt;p>&lt;a class="link" href="https://zhuanlan.zhihu.com/p/443264124" target="_blank" rel="noopener"
+>【知乎】react-hooks原理解析&lt;/a>&lt;/p>
+&lt;p>常见钩子：&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>useState&lt;/code>&lt;/li>
+&lt;li>&lt;code>useEffect&lt;/code>&lt;/li>
+&lt;li>&lt;code>useContext&lt;/code>&lt;/li>
+&lt;li>&lt;code>useReducer&lt;/code>&lt;/li>
+&lt;li>&lt;code>useRef&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;p>生命周期：挂载 &amp;ndash;&amp;gt; 更新 &amp;ndash;&amp;gt; 卸载&lt;/p>
+&lt;h2 id="virtual-dom">Virtual Dom&lt;/h2>
+&lt;p>参考链接：
+&lt;a class="link" href="https://zhuanlan.zhihu.com/p/462727885" target="_blank" rel="noopener"
+>【知乎】剖析React核心设计原理&amp;ndash;Virtual Dom&lt;/a>&lt;/p>
+&lt;h3 id="virtual-dom的作用">Virtual Dom的作用&lt;/h3>
+&lt;p>Virtual Dom是对HTML Dom的JavaScript形式的封装&lt;/p>
+&lt;blockquote>
+&lt;p>Virtual DOM是一种编程方式，它以对象的形式保存在内存中，它描述了我们DOM的必要信息，并且用类似react-dom等模块与真实DOM同步，这一过程也叫协调(reconciler)，这种方式可以声明式的渲染相应的ui状态，让我们从DOM操作中解放出来&lt;/p>
+&lt;/blockquote>
+&lt;p>我理解有了Virtual Dom之后，弱化了开发者对于原生HTML Dom的感知，这样更方便我们在JavaScript层面去修改页面的动态元素。&lt;/p></description></item></channel></rss>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Linux on Slhmy's blog</title><link>https://slhmy.github.io/tags/linux/</link><description>Recent content in Linux on Slhmy's blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Fri, 09 Sep 2022 15:48:00 +0800</lastBuildDate><atom:link href="https://slhmy.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml"/><item><title>Linux System Cheat List</title><link>https://slhmy.github.io/p/linux-system-cheat-list/</link><pubDate>Fri, 09 Sep 2022 15:48:00 +0800</pubDate><guid>https://slhmy.github.io/p/linux-system-cheat-list/</guid><description>&lt;h2 id="前言">前言&lt;/h2>
+&lt;p>这个“小抄”实际上是一个小记的模式，指我遇到什么相关的问题会在这里记录一下。&lt;/p>
+&lt;h3 id="whats-the-meaning-of-the-return-value-of-fn-kill">What&amp;rsquo;s the meaning of the return value of &lt;code>fn kill()&lt;/code>?&lt;/h3>
+&lt;blockquote>
+&lt;p>On success (at least one signal was sent), zero is returned. On error, -1 is returned, and errno is set appropriately.&lt;/p>
+&lt;/blockquote></description></item></channel></rss>

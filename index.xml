@@ -1,0 +1,842 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Slhmy's blog</title><link>https://slhmy.github.io/</link><description>Recent content on Slhmy's blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Sat, 12 Aug 2023 20:00:02 +0800</lastBuildDate><atom:link href="https://slhmy.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>Intro of SHUpdtp</title><link>https://slhmy.github.io/p/intro-of-shupdtp/</link><pubDate>Sat, 12 Aug 2023 20:00:02 +0800</pubDate><guid>https://slhmy.github.io/p/intro-of-shupdtp/</guid><description>&lt;blockquote>
+&lt;p>迁移自我的语雀，此项目已经放弃维护，它出现在这里，主要是因为我想测试一下我的博客迁移工具~&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="-前言">✏️ 前言&lt;/h2>
+&lt;h3 id="随便说说">随便说说&lt;/h3>
+&lt;p>这个项目对我个人而言，意义比较特殊。它是我的毕业设计课题，但在答辩结束以后，这个项目还是在一直继续的完善开发&amp;hellip;甚至可能直到我离开学校，它有可能还有很长一段路要走。&lt;/p>
+&lt;p>我这个人比较讨厌放弃一件自己曾经想做但是又没做成的事情，初中时期成绩一年不如一年的算法竞赛让我大学里还是跳进了ACM-ICPC的大坑；退役之后以测试身份加入学校OJ（Online Judge）平台的开发，但实际上后端根本就没有人会启动起来&amp;hellip;所以实习回到学校以后，才会硬着头皮用Rust再搞了一次。&lt;/p>
+&lt;p>这个项目比我预想的要简单一些，对我而言目前它已经不是一个能给我带来进一步提升的项目了，不过如果没有像我这样类似的开发经历的话，它还是有许多地方是值得参考学习的。毕竟我也是从连API规范都搞不清楚，一点点把模块分好，最后又废弃初版重做这样走过来的。这期间的收获还是很多的。&lt;/p>
+&lt;h3 id="这篇文章的主要内容">这篇文章的主要内容&lt;/h3>
+&lt;p>这是一篇介绍博客，主要会说一下项目的大致功能以及涉及到的技术点，具体的技术学习的内容会分享在同系列的笔记当中。&lt;/p>
+&lt;h2 id="-shupdtp的大致用途">🍟 SHUpdtp的大致用途&lt;/h2>
+&lt;p>SHUpdtp（全称：Shanghai University program design training platform），中文名译为上海大学程序设计训练平台，简单来说就是一个高校自用的在线判题系统。同类型的网站在面试和竞赛圈里其实很常见，&lt;a class="link" href="https://www.nowcoder.com/" target="_blank" rel="noopener"
+>牛客&lt;/a>、&lt;a class="link" href="https://leetcode-cn.com/" target="_blank" rel="noopener"
+>力扣&lt;/a>应该是全网最家喻户晓的两个（不熟悉的朋友可以访问一下看看）。高校判题系统对比商用判题系统，更多的是承载在线判题的基本功能，拓展功能一般酌情添加，不会像后者做的如此全面（因为本身的受众也更少）。&lt;/p>
+&lt;p>在这篇文章的最开头，我配了一张动图（这是我毕业设计答辩时附带的演示用前端，我不是前端专家，这部分就暂时没有打算分享时怎么做的了），动图里展示的就是一个最基本的在线判题系统的使用方法。如果还是有一些不清楚的话，我这里附上一页PPT&amp;hellip;说实话这块用文字描述挺困难的，建议有兴趣的还是多看看其他同类型的平台，这部分的文字解说我暂时打算简单略过（如果有需要请记得提醒我更新），非常抱歉🤥！&lt;br>
+&lt;img src="https://slhmy.github.io/p/intro-of-shupdtp/images/SHUpdtp%281%29.png"
+width="1164"
+height="874"
+srcset="https://slhmy.github.io/p/intro-of-shupdtp/images/SHUpdtp%281%29_hub1bd458f91e81e52522ee7bcc855e52b_366787_480x0_resize_box_3.png 480w, https://slhmy.github.io/p/intro-of-shupdtp/images/SHUpdtp%281%29_hub1bd458f91e81e52522ee7bcc855e52b_366787_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="SHUpdtp(1).png"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="319px"
+>&lt;/p>
+&lt;h2 id="-涉及到的技术点">📉 涉及到的技术点&lt;/h2>
+&lt;p>在线判题系统和很多xxx系统（比如图书管理系统，课程管理系统实际上是同一类），但是SHUpdtp有两个不一样的点，一是它是使用Rust进行开发，二是在线判题系统需要依赖于判题机实现在线判题功能。所以涉及到的主要技术点主要有以下这些：&lt;/p>
+&lt;ul>
+&lt;li>使用Rust完成后端开发，确保项目结构清晰，运行稳定&lt;/li>
+&lt;li>怎么使用Rust的Web框架和ORM框架配合数据库制作API接口&lt;/li>
+&lt;li>如何用某种手段接入和管理附属判题机&lt;/li>
+&lt;/ul>
+&lt;p>还有一些小的细节方面的我就不一一列举了，以上几个技术点还是比较值得学习的，小一些的技术点多数学习价值不高（不过诸如：接入阿里云短信接口&amp;hellip;这样的案例我有空的时候也会来分享的）。&lt;/p>
+&lt;p>文末附上&lt;a class="link" href="https://github.com/slhmy/SHUpdtp" target="_blank" rel="noopener"
+>SHUpdtp&lt;/a>仓库链接，里面是最新的平台后端❤️。&lt;/p></description></item><item><title>快速学习Rust编程语言</title><link>https://slhmy.github.io/p/learn-rust-with-a-glance/</link><pubDate>Sun, 02 Jul 2023 16:33:00 +0800</pubDate><guid>https://slhmy.github.io/p/learn-rust-with-a-glance/</guid><description>&lt;h2 id="前言">前言&lt;/h2>
+&lt;p>写这篇Post的起因是我希望有更多的人能参与到我的开源项目中来，
+但它是用Rust写的，这让不少想要了解这项目的人无法快速加入到其中来。
+当然我也希望能通过这篇文章，能够让更多的人不再畏惧对新语言的学习。&lt;/p>
+&lt;p>老实说在半年之前，我也会经常畏惧我没有接触过的高级编程语言
+（例如：我也曾因为没接触过Go而感到困扰）。
+而现在，我已经能够快速适应多种不同高级编程语言的使用
+（请注意我说的是高级编程语言）。
+到目前为止，
+我会在不同情景下使用Go、Rust、JS/TS、C#、Python、C/C++、Java这些高级编程语言。
+之所以能够快速接触到这么多语言，我认为有一些经验是需要指出的，
+无论是在学习Rust还是任何一门其他的高级编程语言。&lt;/p>
+&lt;h3 id="如何快速入门一个新的高级编程语言">如何快速入门一个新的高级编程语言&lt;/h3>
+&lt;p>首先，如果你有过几年的编程经验，&lt;u>我不提倡为了学一门语言而去做专项的学习&lt;/u>。
+因为在没有项目参考的情况下，学习编程语言的成本是比较高的，
+这会不明所以地消耗你大量的时间。&lt;/p>
+&lt;p>你需要变得自信：&lt;u>高级编程语言本身就是人类可读的文本，基本没有理由看不懂&lt;/u>。
+会造成困扰的是它们当中&lt;strong>不同的语义符号和一些较为特殊的语言机制&lt;/strong>，
+通常来说这些不同会让你在空手进行开发时给你造成比较大的困扰，
+但如果仅是进行阅读，理解代码的逻辑含义还是较为轻松的。&lt;/p>
+&lt;p>&lt;u>丰富的RealWorld项目经历会降低学习的成本&lt;/u>。
+代码和读书虽然很接近，但也还是略有不同，
+因为写的代码层次一旦开始变得复杂，你就需要使用一些常见的方法去帮忙降低构思的复杂度，
+例如：面向对象、设计模式、函数式编程等等。
+你不一定会在所有语言中使用到它们，但实战经历会让你更方便理解和写出更好的代码。
+除此以外，项目中时常会用到扩展依赖，比如说序列化工具、数据库驱动、Web框架等，
+每个语言都有，并且用途和功能都是可以总结的。&lt;/p>
+&lt;p>最后，2023年了&lt;u>搞一个AI联想帮下忙吧&lt;/u>。
+在编写自己不熟悉的语言时，陌生的声明式和符号会让人感到懊恼。
+AI能帮助你尽可能规避类似的问题，多一份联系也是多了一份参考。&lt;/p>
+&lt;h2 id="rust快速入门">Rust快速入门&lt;/h2>
+&lt;p>进入正题，其实上面说了那么多，也是为了在这个环节尽量少说一些。
+接受下划线标注出的关键点，我认为通常来说已经足够了。
+但作为一门相对小众的语言（以及为了能让更多人了解Rust），
+我们还是不得不讨论一些细节的东西。&lt;/p>
+&lt;h3 id="rust的大致画像">Rust的大致画像&lt;/h3>
+&lt;p>以防你可能会问：“Rust有什么好的？”
+类似这样的问题，我会先简要介绍一下Rust的大致画像。&lt;/p>
+&lt;p>&lt;u>Rust是一门，性能足以和C/C++媲美的，主打&lt;strong>标准现代工程化&lt;/strong>的静态编程语言&lt;/u>，
+为了实现高效的运行效率和足够现代和安全的开发流程，
+Rust会比任何同类型的编程语言看上去更加繁琐。
+它是一个较好的C++的同类替代品，在较为基础的模块编写上，能够做到非常优秀的工程输出。
+对于不熟悉使用C++进行工程开发的人来说，
+Rust项目的工具链（cargo）更容易上手，编写的代码也不容易出错。&lt;/p>
+&lt;p>语法形式上Rust和Typescript、Scala等语言类似，
+使用这些语言的领域的程序员会更容易上手Rust。
+但同时Rust的unsafe特性又可以使其下探到系统级别的编程领域，
+这些领域也带来一批更加高级的玩法。&lt;/p>
+&lt;p>Rust的开源社区破事比较多，但也确实有不少大佬也喜欢使用Rust。&lt;/p>
+&lt;h4 id="我的项目为什么选择rust">我的项目为什么选择Rust&lt;/h4>
+&lt;p>对我来说Rust足够存粹，我可以在任何地方任何场合，快速构建Rust的项目环境
+（cargo、VSCode+插件）。
+cargo这个工具可以帮助我快速引入我想要的依赖，生成足够清晰的文档，并且做好模块划分，
+相反我对C++该如何做这些事情并不非常熟悉。
+&lt;em>对于未来参与贡献的人来说，我希望在提交代码之前就解决大部分潜在的代码问题，
+Rust足够安全的特性大幅度减轻了我的心理负担。
+（你写出来的代码通常来说只要通过编译，就不会产生任何无法追查的恶性BUG）&lt;/em>&lt;/p>
+&lt;h3 id="rust的开发工具链">Rust的开发工具链&lt;/h3>
+&lt;p>当你在阅读或者开发Rust程序时，你需要安装：&lt;/p>
+&lt;ol>
+&lt;li>rustup（包含cargo）&lt;a class="link" href="https://www.rust-lang.org/tools/install" target="_blank" rel="noopener"
+>官网地址&lt;/a>&lt;/li>
+&lt;li>VSCode/Clion + Rust插件包（包含rust-analyzer）（+tabnine/copilot）&lt;/li>
+&lt;/ol>
+&lt;p>接下来你需要掌握Cargo的使用，文档可以参考&lt;a class="link" href="https://doc.rust-lang.org/cargo/" target="_blank" rel="noopener"
+>Cargo Book&lt;/a>。
+&lt;u>你需要知道如何使用&lt;code>cargo new/build/run/test + fmt/clippy&lt;/code>的使用，其中fmt和clippy可以帮助你编写更优秀的代码&lt;/u>。&lt;/p>
+&lt;h3 id="rust的语法和特性">Rust的语法和特性&lt;/h3>
+&lt;p>&lt;a class="link" href="https://doc.rust-lang.org/book/ch03-00-common-programming-concepts.html" target="_blank" rel="noopener"
+>The Rust Programming Language&lt;/a>
+是你在感到疑惑时最优先参照的资料，这是最官方的语法教程。
+但正如我之前说的一样，我并不建议你在完全没有项目作为出发点的时候去通读这本书，
+这很消耗时间。&lt;/p>
+&lt;p>接下来我会列出一些小的章节，来解释一些你需要在入门时就习惯的的Rust语法和特性。&lt;/p>
+&lt;h4 id="common通用语法">【Common】通用语法&lt;/h4>
+&lt;p>这个章节包含的是如何申明变量，如何使用注释和循环等在其他编程语言当中也非常常见的语法。
+&lt;a class="link" href="https://doc.rust-lang.org/book/ch03-00-common-programming-concepts.html" target="_blank" rel="noopener"
+>Common Programming Concepts&lt;/a>
+和它的子章节基本就能解决所有这些问题，但我同样不建议你直接阅读这些章节，
+在我看来这些语法稀疏平常，直接阅读通常也能理解它的含义。&lt;/p>
+&lt;p>有可能会带来困扰的是声明相关的内容，不过你只需要了解下面这些就足够了。
+如果你想创建一个由名字指代的值，只要这么写就可以了：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">let (mut) {value_name}: {type} = {value}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>如你所见，类型声明的位置和其他语言是稍有区别的，显然这不是很影响理解
+&lt;code>mut&lt;/code>你可能之前并没有见过，它的意思是mutable，
+如果你想创建的时一个变量，你需要在声明时指定&lt;code>mut&lt;/code>。
+&lt;u>Rust的语法是相对繁复的，
+这种设计的目的是为了让编写的人时刻清楚，自己具体在做什么&lt;/u>。&lt;/p>
+&lt;h4 id="commonoption可选变量入门enum和模式匹配">【Common】Option可选变量（入门Enum和模式匹配）&lt;/h4>
+&lt;p>我们开始接触一些真正奇怪的东西了，
+入门Rust第一个坏消息是，你可能不会再见到&lt;code>Null&lt;/code>或者&lt;code>nil&lt;/code>了。
+（至于为什么这样可以翻阅这个章节：&lt;a class="link" href="https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html#the-option-enum-and-its-advantages-over-null-values" target="_blank" rel="noopener"
+>The Option Enum and Its Advantages Over Null Values&lt;/a>)
+不过好在这件事其实挺容易接受的，
+Option会是你在Rust当中接触的非常多的一种枚举类型：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-rust" data-lang="rust">&lt;span class="line">&lt;span class="cl">&lt;span class="k">enum&lt;/span> &lt;span class="nb">Option&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nb">None&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nb">Some&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="p">),&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>如果你掌握其他语言中泛型的使用&lt;/strong>，那么你应该不难理解上面的代码。&lt;/p>
+&lt;blockquote>
+&lt;p>如果你并不清楚什么时泛型，或者说你完全无法理解&lt;code>&amp;lt;&amp;gt;&lt;/code>，
+可以先尝试阅读
+&lt;a class="link" href="https://doc.rust-lang.org/book/ch10-00-generics.html" target="_blank" rel="noopener"
+>Generic Types, Traits, and Lifetimes&lt;/a>
+中的Generic部分，或者尝试从其他语言中获取参考，请一定记住，你只需要浅显地理解即可&lt;/p>
+&lt;/blockquote>
+&lt;p>在展开&lt;code>Option&lt;/code>包裹的值时，你只会遇到两种情况，一种是&lt;code>None&lt;/code>一种是有值的&lt;code>Some&lt;/code>。&lt;/p>
+&lt;p>&lt;strong>那么如何展开一个Enum呢？
+常见的方法有两种(&lt;code>match&lt;/code>和&lt;code>if let&lt;/code>)&lt;/strong>：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-rust" data-lang="rust">&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">let&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">config_max&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">Some&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="k">u8&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">match&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">config_max&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nb">Some&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">max&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="fm">println!&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;The maximum is configured to be &lt;/span>&lt;span class="si">{}&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">max&lt;/span>&lt;span class="p">),&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">_&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(),&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-rust" data-lang="rust">&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">let&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">config_max&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">Some&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="k">u8&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">if&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kd">let&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">Some&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">max&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">config_max&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="fm">println!&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;The maximum is configured to be &lt;/span>&lt;span class="si">{}&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">max&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>请一定尝试用自然语言的理解方式理解这些代码，我认为这些设计都是足够自然的，
+当没枚举类型不是Option时也是可以使用的。&lt;/p>
+&lt;p>通常来说，当你只专注于解开Enum当中一种情况的值时，你可以使用&lt;code>if let&lt;/code>句式，
+从而缩减代码量。&lt;/p>
+&lt;blockquote>
+&lt;p>你不需要担心无法正确地挑选&lt;code>match&lt;/code>和&lt;code>if let&lt;/code>句式，
+因为你可以在命令行中输入&lt;code>cargo clippy&lt;/code>来获取代码建议，
+如果你的&lt;code>match&lt;/code>时非常简单的双项选择，&lt;code>cargo clippy&lt;/code>会告诉你如何转换成&lt;code>if let&lt;/code>的。&lt;/p>
+&lt;/blockquote>
+&lt;p>最后，这部分的所有内容都包含在&lt;a class="link" href="https://doc.rust-lang.org/book/ch06-00-enums.html" target="_blank" rel="noopener"
+>Enums and Pattern Matching&lt;/a>下。&lt;/p>
+&lt;h4 id="commonresult错误处理的小问号">【Common】Result错误处理的小问号？&lt;/h4>
+&lt;p>接下来我们要继续认识下一个特别的枚举类型&lt;code>Result&lt;/code>。
+在进行下面的阅读之前，我认为可以提醒你一些小关键点：
+如你所见，我单独拿出来举例的都是Enum的类型，
+这可能会对读者有一定的误导，认为它们各自时特殊的类型。
+&lt;u>请记住同一种类型它们是共享同一种特性的，如&lt;code>match&lt;/code>和&lt;code>if let&lt;/code>对任何Enum都可以使用&lt;/u>&lt;/p>
+&lt;p>对Result来说可以单独拿出来讲的是&lt;code>?&lt;/code>:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-rust" data-lang="rust">&lt;span class="line">&lt;span class="cl">&lt;span class="k">use&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">std&lt;/span>::&lt;span class="n">fs&lt;/span>::&lt;span class="n">File&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">use&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">std&lt;/span>::&lt;span class="n">io&lt;/span>::&lt;span class="p">{&lt;/span>&lt;span class="bp">self&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">Read&lt;/span>&lt;span class="p">};&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">fn&lt;/span> &lt;span class="nf">read_username_from_file&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="w"> &lt;/span>-&amp;gt; &lt;span class="nb">Result&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">String&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">io&lt;/span>::&lt;span class="n">Error&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">let&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">mut&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">username_file&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">File&lt;/span>::&lt;span class="n">open&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;hello.txt&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">?&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">let&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">mut&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">username&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">String&lt;/span>::&lt;span class="n">new&lt;/span>&lt;span class="p">();&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">username_file&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">read_to_string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="k">mut&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">username&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">?&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nb">Ok&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">username&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这是Rust当中上抛错误的简易写法，&lt;strong>当上层的Result的枚举可以提取上抛的错误类型时，
+就可以使用&lt;code>?&lt;/code>来使代码在函数返回Error的枚举值的时候，直接return&lt;/strong>。&lt;/p>
+&lt;blockquote>
+&lt;p>请注意，&lt;code>?&lt;/code>的用法时可以用&lt;code>match&lt;/code>这种通用方法替代的，它就是在匹配到&lt;code>Err(_)&lt;/code>时return的含义。&lt;/p>
+&lt;/blockquote>
+&lt;h4 id="common结构体和面向对象">【Common】结构体和面向对象&lt;/h4>
+&lt;p>如果你使用过Golang这样的较为新式的编程语言，你可能已经接受了不完整的面向对象的使用。
+Rust也是如此，&lt;code>impl&lt;/code>取代了Golang中的接口，使用起来通常比传统的面向对象更加简易。&lt;/p>
+&lt;p>我认为在这一部分，你需不需要有太多的学习负担，毕竟这块设计并不是非常有特色的，
+因该能快速适应的。
+相关的章节在：&lt;a class="link" href="https://doc.rust-lang.org/book/ch05-00-structs.html" target="_blank" rel="noopener"
+>Using Structs to Structure Related Data&lt;/a>。&lt;/p>
+&lt;blockquote>
+&lt;p>对结构体的使用更多是在程序设计方面，出色的设计可以制作出优秀的代码流，可以利用到函数式编程这种优秀的编写方式。&lt;/p>
+&lt;/blockquote>
+&lt;h4 id="project模块的编排">【Project】模块的编排&lt;/h4>
+&lt;p>我非常讨厌单文本代码，代码量一旦变大，我们就需要把代码拆分成多个文件。
+这就会需要考虑我们的代码是否需要进行公开，以及如何在其他地方引用它们。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-rust" data-lang="rust">&lt;span class="line">&lt;span class="cl">&lt;span class="k">use&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">crate&lt;/span>::&lt;span class="n">garden&lt;/span>::&lt;span class="n">vegetables&lt;/span>::&lt;span class="n">Asparagus&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">pub&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">mod&lt;/span> &lt;span class="nn">garden&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">fn&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">let&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">plant&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">Asparagus&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">{};&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="fm">println!&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;I&amp;#39;m growing &lt;/span>&lt;span class="si">{:?}&lt;/span>&lt;span class="s">!&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">plant&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>你需要掌握两种标记，&lt;code>pub&lt;/code>和&lt;code>use&lt;/code>：&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>pub&lt;/code>很容易理解，就是公开模块中的某个元素（元素可以是，函数、结构体、结构体中的成员等）&lt;/li>
+&lt;li>&lt;code>use&lt;/code>用于引用我们需要使用的元素模块，其后会跟随一串路径，路径的开头可能会有些特殊的起始标记，例如&lt;code>crate&lt;/code>和&lt;code>super&lt;/code>，前者是项目的起始路径标记，后者是同级模块的相对路径起始标记。&lt;/li>
+&lt;/ul>
+&lt;p>你可以在遇到疑惑时再翻阅下面的文档&lt;a class="link" href="https://doc.rust-lang.org/book/ch07-02-defining-modules-to-control-scope-and-privacy.html?highlight=mod#modules-cheat-sheet" target="_blank" rel="noopener"
+>Managing Growing Projects with Packages, Crates, and Modules&lt;/a>&lt;/p>
+&lt;h4 id="magic生命周期">【Magic】生命周期&lt;/h4>
+&lt;p>压轴部分，也是Rust当中最难以理解的特性之一，它在教程的第三章就进行了介绍：
+&lt;a class="link" href="https://doc.rust-lang.org/book/ch04-00-understanding-ownership.html" target="_blank" rel="noopener"
+>Understanding Ownership&lt;/a>。
+Rust还有一些其他的高级用法，但生命周期是你几乎无法规避的，
+它的存在造就了Rust既块有编写安全的特征，也使代码的编写不那么顺心如意。&lt;/p>
+&lt;p>在Rust的设计当中，&lt;strong>任何非常量的值，默认只存活于它的作用域当中，且只有一个真正的实体&lt;/strong>。&lt;/p>
+&lt;p>我稍微修改了一份官方的例子，这个例子在其他编程语言中通常是能通过编译的，但是Rust不行。
+原因就是上面的规约造成的，在&lt;code>let s3 = takes_and_gives_back(s2);&lt;/code>执行时，&lt;code>s2&lt;/code>的实体已经发生了转移。&lt;/p>
+&lt;blockquote>
+&lt;p>Rust的编写过程当中，非常大部分的编译报错都是由不合法的生命周期造成的。
+对此你需要额外地进行一些适应，但请理解，这也可以帮助你在较低的关注成本下关注到每个值的分配和释放的情况。&lt;/p>
+&lt;/blockquote>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-rust" data-lang="rust">&lt;span class="line">&lt;span class="cl">&lt;span class="k">fn&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">let&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s1&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">gives_ownership&lt;/span>&lt;span class="p">();&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// gives_ownership moves its return
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// value into s1
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">let&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s2&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">String&lt;/span>::&lt;span class="n">from&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;hello&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// s2 comes into scope
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">let&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s3&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">takes_and_gives_back&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">s2&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// s2 is moved into
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// takes_and_gives_back, which also
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// moves its return value into s3
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="c1">// !!! WILL FAILED TO COMPILE !!!
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kd">let&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s4&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">takes_and_gives_back&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">s2&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// Here, s3 goes out of scope and is dropped. s2 was moved, so nothing
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// happens. s1 goes out of scope and is dropped.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">fn&lt;/span> &lt;span class="nf">gives_ownership&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="w"> &lt;/span>-&amp;gt; &lt;span class="nb">String&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// gives_ownership will move its
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// return value into the function
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// that calls it
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">let&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">some_string&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">String&lt;/span>::&lt;span class="n">from&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;yours&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// some_string comes into scope
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">some_string&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// some_string is returned and
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// moves out to the calling
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// function
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c1">// This function takes a String and returns one
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">fn&lt;/span> &lt;span class="nf">takes_and_gives_back&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">a_string&lt;/span>: &lt;span class="nb">String&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>-&amp;gt; &lt;span class="nb">String&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// a_string comes into
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// scope
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">a_string&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// a_string is returned and moves out to the calling function
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>要修复上面的编译报错也很简单，只需对s2进行拷贝即可&lt;code>let s3 = takes_and_gives_back(s2.clone());&lt;/code>。
+&lt;em>在很多语言，例如Golang和Java中这一动作是自动发生的，
+而在Rust当中，你需要在代码中体现这一个动作。&lt;/em>&lt;/p>
+&lt;h4 id="magic宏和代码生成">【Magic】宏和代码生成&lt;/h4>
+&lt;p>宏是Rust的一种高级特性，但作为入门者你不需要过于担心，我不曾深入过宏的使用，
+在这里提到宏，仅仅是因为你会在代码里看到它们，它能提供更加灵活的功能构建，为代码的编写带来便利。
+作为使用者，我通常用它完成输入输出日志、格式化字符串、添加（反）序列化、编写WebHandler等高级功能。&lt;/p>
+&lt;p>宏会以三种形式出现：&lt;/p>
+&lt;ol>
+&lt;li>&lt;code>macro_name!(...)&lt;/code> 这种宏的使用无异于函数，也叫做函数宏，只是在函数名后有&lt;code>!&lt;/code>标注，
+它能带来比函数更加灵活的使用，典型的代表就是&lt;code>format!/println!()&lt;/code>宏。&lt;/li>
+&lt;li>&lt;code>#[...]&lt;/code> 如果你接触过C#的Attribute，理解这种宏会更加简单，它叫属性宏，可以出现在非常多的代码块的头部
+（比如Enum、struct、func等，也可以出现在文件的头部）为这些代码块添加属性，可以使代码块获得额外的能力&lt;/li>
+&lt;li>&lt;code>#[derive(...)]&lt;/code> 你可以理解派生宏为一种特殊的属性宏，但它只能作用于Enum和struct之上&lt;/li>
+&lt;/ol>
+&lt;blockquote>
+&lt;p>你可以理解宏是通过某种声明实现的Rust代码的生成能力，宏在编译时会在target当中自动生成一串相应的代码，
+通常来说你不需要了解具体它们是如何生成的。&lt;/p>
+&lt;/blockquote>
+&lt;p>更多可以参考文档&lt;a class="link" href="https://doc.rust-lang.org/book/ch19-06-macros.html?highlight=macro#macros" target="_blank" rel="noopener"
+>Macros&lt;/a>&lt;/p>
+&lt;h2 id="结语">结语&lt;/h2>
+&lt;p>以上就是我认为你需要快速学习Rust所需要的全部了，
+在最后我对自己所写的内容进行一些反思。&lt;/p>
+&lt;p>我试图让Rust的具体部分变得更加地简短易懂，单我不认为我做的非常出色。
+我通过接受难易程度，对语法和特性进行了排列，但知识结构依旧显得较为平面。&lt;/p>
+&lt;p>所以在最后，我为每个小章节加上了标头，Common、Project、Magic，
+我认为在任何语言时，可以对语法和特性进行这三大块的分类，
+其中前两者通常不会带来较多的学习成本，
+而Magic是可能带来困扰，但也是真正能产生差异的部分（例如golang的协程，JS/TS的Promise等）。
+&lt;u>在消化Magic部分的内容时，请务必明白它解决的是什么样的一个问题&lt;/u>。&lt;/p>
+&lt;p>我在文章中有大量的内容提到了，我不希望各位在入门时就对特性进行过多的深挖，
+因为这是一种很消耗时间的行为，但并不是说完全拒绝类似源码阅读这样的事情。
+只是这些事情通常不应该在初学时就发生，但如果你是位相关经验较为丰富的“初学者”，
+阅读源码也是被允许的，这可能可以帮助你更好地理解一些事情。&lt;/p>
+&lt;p>(全文终)&lt;/p>
+&lt;p>😩 写的好累，希望各位喜欢 💕&lt;/p>
+&lt;p>📕 ~欢迎在评论区给我留言~ ⌨️&lt;/p></description></item><item><title>Usage of @emotion/styled</title><link>https://slhmy.github.io/p/usage-of-emotion-styled/</link><pubDate>Sun, 06 Nov 2022 10:45:00 +0800</pubDate><guid>https://slhmy.github.io/p/usage-of-emotion-styled/</guid><description>&lt;h2 id="前言">前言&lt;/h2>
+&lt;p>前端我算是那种完全是半路出家的，
+所以尽管我现在已经了解了部分前端框架的运作原理，我发现在实际使用当中，
+我还是非常依赖一些先有的框架来完成所有的事情。
+这会让我在面对一些需要高度定制的模块的时候显得比较被动。&lt;/p>
+&lt;p>但实际上，有些模块如果用较为原始的方法（比如：div+CSS），是比较简单的。
+今天就开一个文章，来记录一下我在工作中接触到的&lt;a class="link" href="https://emotion.sh/docs/styled" target="_blank" rel="noopener"
+>@emotion/styled&lt;/a>这个组件。&lt;/p>
+&lt;h2 id="使用">使用&lt;/h2>
+&lt;p>仔细看了一下，发现上面的链接里说的还是蛮清楚的。
+好像也没有额外多的用法了&amp;hellip;所以这块的话，有想到什么的时候再来更新吧！&lt;/p></description></item><item><title>Event Publish Model in Javascript</title><link>https://slhmy.github.io/p/event-publish-model-in-javascript/</link><pubDate>Sun, 25 Sep 2022 17:20:00 +0800</pubDate><guid>https://slhmy.github.io/p/event-publish-model-in-javascript/</guid><description>&lt;h2 id="前言--场景描述">前言 &amp;amp; 场景描述&lt;/h2>
+&lt;p>最近开始上班了，岗位是全栈（SDE），我号称是会写一些React，于是接到的第一个任务就是去搞前端。
+虽然项目的前端架构看上去比较老旧，是组件式的React，不过经理允许我按照喜好写函数式的，所以本来推进的还挺顺利。
+后来页面架子搭了一点需求之后，经理跟我沟通了一个需求，说是要把原来某个阶段打的log放到组件里显示出来。&lt;/p>
+&lt;p>简单来说是这样一个场景：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Javascript" data-lang="Javascript">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">function&lt;/span> &lt;span class="nx">xxxPage&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">useEffect&lt;/span>&lt;span class="p">(()&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">xxxOperation&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">operationListener&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>operationListener&lt;/code>会在这个页面启动后，监听某个后台任务，然后用&lt;code>console.log&lt;/code>打印在控制台里。&lt;/p>
+&lt;p>&lt;code>operationListener&lt;/code>的大致情况是这样的：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Javascript" data-lang="Javascript">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">class&lt;/span> &lt;span class="nx">xxxOperation&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">function&lt;/span> &lt;span class="nx">operationListener&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// Listen some msg
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">while&lt;/span> &lt;span class="nx">hasMsg&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">msg&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">type&lt;/span> &lt;span class="o">===&lt;/span> &lt;span class="nx">xxx&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// Listen some msg
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>要求是在&lt;code>xxxPage&lt;/code>里动态地把这些log在某处展示出来。
+第一次见这种情况，我上来就没了思路，后来就听到经理嘴里蹦出什么event publish啥的，就去网上搜了一下。&lt;/p>
+&lt;h2 id="解读">解读&lt;/h2>
+&lt;p>我查到的是这篇博客：&lt;a class="link" href="https://www.jianshu.com/p/24586fda48b8" target="_blank" rel="noopener"
+>JavaScript设计模式之发布订阅模式(Publish/Subscribe)&lt;/a>，觉得还是比较好理解的。&lt;/p>
+&lt;p>我把这篇文章中的一些内容运用到上文的场景中大概就变成了下面这样：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Javascript" data-lang="Javascript">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">function&lt;/span> &lt;span class="nx">xxxPage&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">var&lt;/span> &lt;span class="nx">Weather&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">list&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">[],&lt;/span> &lt;span class="c1">// 缓存列表
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">listen&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="kd">function&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">fn&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="c1">// 增加订阅者
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">list&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">push&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">fn&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">publish&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="kd">function&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="c1">// 发布消息
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">for&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">var&lt;/span> &lt;span class="nx">i&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="nx">fn&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="nx">fn&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">list&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">];)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">fn&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">apply&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">this&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="nx">arguments&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">useEffect&lt;/span>&lt;span class="p">(()&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">Weather&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">listen&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">function&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">weather&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">wind&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;天气：&amp;#39;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="nx">weather&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;风力：&amp;#39;&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="nx">wind&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 利用useState等钩子更新元素
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">xxxOperation&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">operationListener&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">Weather&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span> &lt;span class="p">[]);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>之后我们在&lt;code>operationListener&lt;/code>当中调用&lt;code>publish&lt;/code>就好。
+感觉这里还是运用到了一种闭包或者说是函数传递的思想，整个监听和发布行为是在主体代码中设定的。
+需要注意的是，&lt;code>useEffect&lt;/code>需要正确的设定触发条件，否则很容易产生多次调用。&lt;/p></description></item><item><title>Unity Game in Web</title><link>https://slhmy.github.io/p/unity-game-in-web/</link><pubDate>Sun, 11 Sep 2022 11:22:00 +0800</pubDate><guid>https://slhmy.github.io/p/unity-game-in-web/</guid><description>&lt;img src="https://slhmy.github.io/p/unity-game-in-web/preview.png" alt="Featured image of post Unity Game in Web" />&lt;h2 id="前言">前言&lt;/h2>
+&lt;p>制作游戏一直都是我比较感兴趣的一件事情。
+这次有时间自己尝试了一下，发现过程上其实还挺简单的，
+关键的可能还是需要对前端有一些基本的认识，然后知道WebGL、WebAssembly啥的，
+这样在实践的时候不会在大方向上出现问题。&lt;/p>
+&lt;p>这篇文章会复现整个项目的制作流成，目的是提供一个大致清晰的制作方向给大家。&lt;/p>
+&lt;h2 id="制作你的unity游戏">制作你的Unity游戏&lt;/h2>
+&lt;p>这块会使用到的就是一个比较成熟的Unity工具链。
+这个例子当中，我使用的是一个Unity社区当中的教程模板&lt;a class="link" href="https://learn.u3d.cn/tutorial/unity-microgame-karting#" target="_blank" rel="noopener"
+>Karting Microgame&lt;/a>，你可以在Unity Hub中新建项目的时候找到它的模板。
+这个模板中会简单的教会你一些Unity的使用（包括测试、修改属性、添加物体、发布等），
+当你简单地对Unity有了了解之后，你就可以尝试打包发布你的游戏。&lt;/p>
+&lt;p>打包完成之后你会得到如下图所示的目录结构：&lt;/p>
+&lt;img src="unity-webgl-builds-structure.png" width="50%"/>
+&lt;p>其中&lt;code>Build&lt;/code>目录下的就是我们游戏打包出来的主体，其它外部的是一些默认的配置和资源。
+我们可以利用Node的&lt;a class="link" href="https://www.npmjs.com/package/http-server" target="_blank" rel="noopener"
+>http-server&lt;/a>，
+在&lt;code>WebGL Builds&lt;/code>（或者对应的打包出来的根目录）起一个HTTP Server，
+这样就可以在浏览器中看到游戏是否在正常运行。&lt;/p>
+&lt;img src="unity-webgl-default-view.png" width="50%">
+&lt;h3 id="打包时可能会遇到的问题">打包时可能会遇到的问题&lt;/h3>
+&lt;p>在Unity默认配置下打包的时候，可能发布出来的游戏在加载阶段会报无法加载gzip的报错，修改了HTTP Server的配置可能还是会出同样的报错。&lt;/p>
+&lt;p>这个问题目前判断下来是因为Unity内核的一些问题导致，
+所以可能需要修改一下在&lt;code>Edit/Project Settings/Player/Settings for WebGL&lt;/code>下的打包目标的配置，
+配置方法可以参考下图：&lt;/p>
+&lt;img src="unity-webgl-publishing-settings.png" width="50%">
+&lt;h2 id="将unity游戏嵌入到react项目当中">将Unity游戏嵌入到React项目当中&lt;/h2>
+&lt;p>这里就是使用了一个Node的依赖，&lt;a class="link" href="https://www.npmjs.com/package/react-unity-webgl" target="_blank" rel="noopener"
+>React Unity WebGL&lt;/a>&lt;/p>
+&lt;p>大致的使用方法如下:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-JavaScript" data-lang="JavaScript">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="k">default&lt;/span> &lt;span class="kd">function&lt;/span> &lt;span class="nx">DashboardPage&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">unityProvider&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">useUnityContext&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">loaderUrl&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;/game/build/kart.loader.js&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">dataUrl&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;/game/build/kart.data.unityweb&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">frameworkUrl&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;/game/build/kart.framework.js.unityweb&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">codeUrl&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;/game/build/kart.wasm.unityweb&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nx">Unity&lt;/span> &lt;span class="nx">unityProvider&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="nx">unityProvider&lt;/span>&lt;span class="p">}&lt;/span> &lt;span class="nx">style&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">{{&lt;/span> &lt;span class="nx">width&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">800&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">height&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">600&lt;/span> &lt;span class="p">}}&lt;/span> &lt;span class="o">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这是一个比较简单的使用例子，可以看到在&lt;code>useUnityContext&lt;/code>中，我们提供的信息其实就是之前介绍到的主体。&lt;/p></description></item><item><title>Hugo doesn't work</title><link>https://slhmy.github.io/p/hugo-doesnt-work/</link><pubDate>Fri, 09 Sep 2022 15:48:00 +0800</pubDate><guid>https://slhmy.github.io/p/hugo-doesnt-work/</guid><description>&lt;p>Today, I opened my blog workplace and decided to write something about my latest work.
+It was kind of weird that after I ran &lt;code>hugo server&lt;/code> and visit the development site,
+I seen nothing but a white page. I found this kind of strange things bother me a lot,
+so I decide to do some more to record them in case I meet them again.&lt;/p>
+&lt;p>This post can be very easy currently,
+wether it will become more complex depends on the amount of problems.&lt;/p>
+&lt;h2 id="found-no-layout-file-for-html-for-page">found no layout file for &amp;ldquo;HTML&amp;rdquo; for &amp;ldquo;page&amp;rdquo;&lt;/h2>
+&lt;p>&lt;strong>Description:&lt;/strong> Run &lt;code>hugo server&lt;/code> and visit the development site, see nothing but a white page.
+Find WARNINGs like &amp;lsquo;found no layout file for &amp;ldquo;HTML&amp;rdquo; for &amp;ldquo;page&amp;rdquo;&amp;rsquo;.&lt;/p>
+&lt;p>&lt;strong>Related link:&lt;/strong> &lt;a class="link" href="https://stackoverflow.com/questions/60269683/how-to-fix-the-error-found-no-layout-file-for-html-for-page-in-hugo-cms" target="_blank" rel="noopener"
+>How to fix the error &amp;lsquo;found no layout file for &amp;ldquo;HTML&amp;rdquo; for &amp;ldquo;page&amp;rdquo;&amp;rsquo; in Hugo CMS?&lt;/a>&lt;/p>
+&lt;p>&lt;strong>Solution:&lt;/strong> Run &lt;code>hugo mod clean&lt;/code>.&lt;/p>
+&lt;p>&lt;strong>Guess Cause:&lt;/strong> Some of the computer rubbish cleaner software may delete the running essenstial of Hugo as rubbish.
+This issue is likely to appear after I clean my computer with rubbish cleaner.&lt;/p></description></item><item><title>Linux System Cheat List</title><link>https://slhmy.github.io/p/linux-system-cheat-list/</link><pubDate>Fri, 09 Sep 2022 15:48:00 +0800</pubDate><guid>https://slhmy.github.io/p/linux-system-cheat-list/</guid><description>&lt;h2 id="前言">前言&lt;/h2>
+&lt;p>这个“小抄”实际上是一个小记的模式，指我遇到什么相关的问题会在这里记录一下。&lt;/p>
+&lt;h3 id="whats-the-meaning-of-the-return-value-of-fn-kill">What&amp;rsquo;s the meaning of the return value of &lt;code>fn kill()&lt;/code>?&lt;/h3>
+&lt;blockquote>
+&lt;p>On success (at least one signal was sent), zero is returned. On error, -1 is returned, and errno is set appropriately.&lt;/p>
+&lt;/blockquote></description></item><item><title>Golang Production and Consumption Controller Model</title><link>https://slhmy.github.io/p/go-pc-control-model/</link><pubDate>Sat, 03 Sep 2022 11:09:00 +0800</pubDate><guid>https://slhmy.github.io/p/go-pc-control-model/</guid><description>&lt;img src="https://slhmy.github.io/p/go-pc-control-model/cover.png" alt="Featured image of post Golang Production and Consumption Controller Model" />&lt;p>&lt;strong>前情提要是这样的：&lt;/strong>&lt;/p>
+&lt;p>我昨天参加了我非常喜欢的某公司的全栈开发工程师的面试，
+在介绍了我各种过往奇奇怪怪的（真的是非常奇怪的，面试官听了以后直皱眉😂）项目之后，
+面试官开始考核我的一些实战能力。
+然后上来的第一道代码设计的题目就把我考到了，&lt;strong>要我用协程实现多生产多消费，并且能控制协程创建退出&lt;/strong>。&lt;/p>
+&lt;p>可能是我Golang只接触了一个月左右的时间，
+虽然之前确实有一次被考到&lt;code>channel&lt;/code>的用法（但复盘的时候也就是简单补习了一下&lt;code>make channel&lt;/code>）。
+这次上来直接动手要写代码，还是很多反应不过来，我直接就寄了&amp;hellip;
+查了一会&lt;code>channel&lt;/code>的用法，后面憋出几行又发现为了不让进程过早退出还要使用&lt;code>waitGroup&lt;/code>这些😇。
+然后上面说到的模型确实比较重要的，毕竟我简历上也吹嘘自己掌握各种异步任务设计&amp;hellip;
+结果就是啪啪打脸。&lt;/p>
+&lt;p>于是在这场被虐的非常惨烈的面试之后，我决定把这样一个生产消费模型好好补一下。
+最后补习完了以后发现，大量的内容还是跟Golang的&lt;code>channel&lt;/code>用法有关，那么这篇文章就主要对其做一个梳理。&lt;/p>
+&lt;p>&lt;strong>相关完整代码&lt;/strong>：&lt;a class="link" href="https://github.com/slhmy/golang-programming-models/tree/main/producer-consumer-control" target="_blank" rel="noopener"
+>producer-consumer-control&lt;/a>&lt;/p>
+&lt;h2 id="basics">Basics&lt;/h2>
+&lt;p>我不会讲太多，因为很多地方可以查到，介绍的肯定也更详细。
+这里只是提供一个较快的了解。&lt;/p>
+&lt;h3 id="channel">channel&lt;/h3>
+&lt;p>首先对channel需要掌握它的类型声明、创建和操作方法。&lt;/p>
+&lt;h4 id="channel的类型声明">channel的类型声明&lt;/h4>
+&lt;p>在Golang当中，我们通过&lt;code>[VARIABLE NAME] &amp;lt;-chan | chan | chan&amp;lt;- [TYPE]&lt;/code>这样的句式来声明一个&lt;code>channel&lt;/code>和它内部的数据类型。
+这里&lt;code>chan&lt;/code>有点像一个前缀的修饰词，可能由于是关键字的原因，在用法上和普通泛型上有区分。
+我认为关键是要使用&lt;strong>象形&lt;/strong>的记忆方式，把&lt;code>chan&lt;/code>本身就想象成一个管道，你可以在&lt;code>chan&lt;/code>的两侧用&lt;code>&amp;lt;-&lt;/code>来标记&lt;code>chan&lt;/code>在这个作用域中的可以使用的端口是写端还是读端，没有标记时代表允许双端的操作&lt;/p>
+&lt;h4 id="channel的创建">channel的创建&lt;/h4>
+&lt;p>通过&lt;code>make&lt;/code>我们可以创建一个&lt;code>channel&lt;/code>，这里值得注意的是&lt;code>make&lt;/code>分配的容量是根据对象的原子个数分配的。
+像&lt;code>string&lt;/code>类型，分配的是字符串的长度，这里是容易理解错的。
+但如果你是创建的一个&lt;code>struct&lt;/code>，那分配的容量是“多少个struct”。&lt;/p>
+&lt;h4 id="channel的操作">channel的操作&lt;/h4>
+&lt;p>&lt;code>chan&lt;/code>最基本的操作就是写值和取值操作。&lt;/p>
+&lt;p>写值的语法是&lt;code>[CHANNEL] &amp;lt;- [VARIABLE] | [VALUE]&lt;/code>，是象形的操作方式。&lt;/p>
+&lt;p>取值的语法是&lt;code>[VARIABLE] := &amp;lt;-[CHANNEL]&lt;/code>，代表从写端取值，
+此外还有和&lt;code>range&lt;/code>一起使用的一些语法糖（这里就不过多介绍了）。&lt;/p>
+&lt;h3 id="context">Context&lt;/h3>
+&lt;p>&lt;code>Context&lt;/code>的中文含义是上下文，这类设计其实在很多服务框架中有做到。
+像在Rust的一些Web框架中，会有&lt;code>app.data&lt;/code>的设计，这样做的目的主要就是方便线程/协程之间实现数据的共享。&lt;/p>
+&lt;p>在Golang当中，我认为&lt;code>Context&lt;/code>也起到了类似的作用。
+但在这样一个功能的基础上，&lt;code>Context&lt;/code>还提供了一些特殊字段和控制方法，用来实现对协程的控制。
+最重要的一种用法如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Golang" data-lang="Golang">&lt;span class="line">&lt;span class="cl">&lt;span class="k">select&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">case&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="nx">ctx&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Done&lt;/span>&lt;span class="p">():&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">default&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// normal works when this goroutine is up
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>我们通过&lt;code>ctx.Done&lt;/code>这个管道来判断协程是否需要终止，
+这个管道的消息可以通过设置&lt;code>TimeOut&lt;/code>或者手动&lt;code>cancel&lt;/code>等方法来发送。
+具体可以查阅相关的资料。&lt;/p>
+&lt;h2 id="practice">Practice&lt;/h2>
+&lt;p>最后我们来提一下多生产多消费这个模型的实践。
+思路其实很简单，我们需要创建一个&lt;code>channel&lt;/code>来作为消息队列，另外我们还需要一个&lt;code>Context&lt;/code>来控制协程的退出。&lt;/p>
+&lt;p>我们首先定义消息的格式，并准备&lt;code>channel&lt;/code>和&lt;code>Context&lt;/code>。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Golang" data-lang="Golang">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">type&lt;/span> &lt;span class="nx">Message&lt;/span> &lt;span class="kd">struct&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">Content&lt;/span> &lt;span class="kt">string&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">var&lt;/span> &lt;span class="nx">ctx&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">cancel&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">WithCancel&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Background&lt;/span>&lt;span class="p">())&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">dataChannel&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nb">make&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">chan&lt;/span> &lt;span class="nx">Message&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">countChannel&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nb">make&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">chan&lt;/span> &lt;span class="kt">int&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>dataChannel&lt;/code>是用来生产的消息队列，&lt;code>countChannel&lt;/code>是生产者之间用来协同控制消息号的。
+由于&lt;code>countChannel&lt;/code>的读写会发生在一个生产者当中，我们需要设置一个大小为1的缓冲，
+每次生产者进行生产之前，生产者会先读取缓冲中的值，并把最新的消息号更新。&lt;/p>
+&lt;p>最后结合&lt;code>Context&lt;/code>的基本用法，我们得到的核心逻辑如下：&lt;/p>
+&lt;h3 id="producer核心逻辑">Producer核心逻辑&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Golang" data-lang="Golang">&lt;span class="line">&lt;span class="cl">&lt;span class="k">select&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Handle &amp;lt;-ctx.Done()
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">case&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="nx">ctx&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Done&lt;/span>&lt;span class="p">():&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Producer_%d quit\n&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">id&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">default&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// Get message count
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">Count&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="nx">countCh&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">Count&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="mi">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">countCh&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span> &lt;span class="nx">Count&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// Produce
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">dataCh&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span> &lt;span class="nx">Message&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">Content&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Sprintf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Producer_%d sending message_%d&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">id&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">Count&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">time&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Sleep&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="nx">time&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Second&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="consumer核心逻辑">Consumer核心逻辑&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Golang" data-lang="Golang">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Consume
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="nx">data&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="nx">dataCh&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Consumer_%d get message: %s\n&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">id&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">data&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Content&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item><item><title>Monotone Stack</title><link>https://slhmy.github.io/p/monotone-stack/</link><pubDate>Thu, 01 Sep 2022 20:56:00 +0800</pubDate><guid>https://slhmy.github.io/p/monotone-stack/</guid><description>&lt;p>单调栈是一个很简单的数据结构，但我在做单调栈题目的时候经常一时间想不起来要用它。
+这是一件很奇怪的事情，因为单调栈确实是一个“看一眼就会的”那种&amp;hellip;
+之所以出现这样的情况，道理其实很简单：&lt;strong>对单调栈凸显的本质还不够了解&lt;/strong>。&lt;/p>
+&lt;h2 id="单调栈的本质">单调栈的本质&lt;/h2>
+&lt;p>其实单调栈的本质也很简单，我们用拆词的方法区理解它。&lt;/p>
+&lt;p>首先是&lt;strong>单调&lt;/strong>，它描述了栈里元素的排列状态，
+它是从上到下（或者从下到上）&lt;strong>有序&lt;/strong>排列的这么一个形式。&lt;/p>
+&lt;p>接下来是&lt;strong>栈&lt;/strong>，栈代表通常在某个状态下，我们&lt;strong>只关心栈的顶端&lt;/strong>是什么元素。&lt;/p>
+&lt;h2 id="问题配对">问题配对&lt;/h2>
+&lt;p>知道本质以后，我们需要反过来去想，单调栈适合去解符合什么样特点的问题。&lt;/p>
+&lt;p>首先有序的特点约束了单调栈，它&lt;strong>只适合去解决一些分析顺序是有序的问题&lt;/strong>，
+也就是说，如果题目要求是随机查询这种，那么在不事先打表的情况下，单调栈是不能解决这类问题的。&lt;/p>
+&lt;p>另外对栈的&lt;strong>单端&lt;/strong>特点来说，它其实隐含了，类似下一个最大（或者最小）这种信息，
+因为我们似乎并不需要去关注栈里的其它内容，所以是&lt;strong>在某个状态下，求最值的一种场景&lt;/strong>。
+从另外一方面去看，在只关注最值的情况下，其它部分的值是又被忽略的，
+所以单调栈还有着&lt;strong>在遍历期间忽略数据噪音&lt;/strong>的特性（Ex. 忽略右侧最小的时候，我们并不关系右侧其它较大的值，这时候就可以用单调栈来解决）&lt;/p></description></item><item><title>React Basics</title><link>https://slhmy.github.io/p/react-hooks/</link><pubDate>Wed, 31 Aug 2022 19:00:00 +0800</pubDate><guid>https://slhmy.github.io/p/react-hooks/</guid><description>&lt;h2 id="hooks">Hooks&lt;/h2>
+&lt;p>&lt;a class="link" href="https://zhuanlan.zhihu.com/p/443264124" target="_blank" rel="noopener"
+>【知乎】react-hooks原理解析&lt;/a>&lt;/p>
+&lt;p>常见钩子：&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>useState&lt;/code>&lt;/li>
+&lt;li>&lt;code>useEffect&lt;/code>&lt;/li>
+&lt;li>&lt;code>useContext&lt;/code>&lt;/li>
+&lt;li>&lt;code>useReducer&lt;/code>&lt;/li>
+&lt;li>&lt;code>useRef&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;p>生命周期：挂载 &amp;ndash;&amp;gt; 更新 &amp;ndash;&amp;gt; 卸载&lt;/p>
+&lt;h2 id="virtual-dom">Virtual Dom&lt;/h2>
+&lt;p>参考链接：
+&lt;a class="link" href="https://zhuanlan.zhihu.com/p/462727885" target="_blank" rel="noopener"
+>【知乎】剖析React核心设计原理&amp;ndash;Virtual Dom&lt;/a>&lt;/p>
+&lt;h3 id="virtual-dom的作用">Virtual Dom的作用&lt;/h3>
+&lt;p>Virtual Dom是对HTML Dom的JavaScript形式的封装&lt;/p>
+&lt;blockquote>
+&lt;p>Virtual DOM是一种编程方式，它以对象的形式保存在内存中，它描述了我们DOM的必要信息，并且用类似react-dom等模块与真实DOM同步，这一过程也叫协调(reconciler)，这种方式可以声明式的渲染相应的ui状态，让我们从DOM操作中解放出来&lt;/p>
+&lt;/blockquote>
+&lt;p>我理解有了Virtual Dom之后，弱化了开发者对于原生HTML Dom的感知，这样更方便我们在JavaScript层面去修改页面的动态元素。&lt;/p></description></item><item><title>Archives</title><link>https://slhmy.github.io/archives/</link><pubDate>Sun, 06 Mar 2022 00:00:00 +0000</pubDate><guid>https://slhmy.github.io/archives/</guid><description/></item><item><title/><link>https://slhmy.github.io/categories/algorithms/readme/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://slhmy.github.io/categories/algorithms/readme/</guid><description>&lt;h1 id="algorithms">algorithms&lt;/h1></description></item><item><title/><link>https://slhmy.github.io/categories/game-life/readme/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://slhmy.github.io/categories/game-life/readme/</guid><description>&lt;h1 id="game-life">game-life&lt;/h1></description></item><item><title/><link>https://slhmy.github.io/categories/programming-skills/readme/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://slhmy.github.io/categories/programming-skills/readme/</guid><description>&lt;h1 id="programming-skills">programming-skills&lt;/h1></description></item><item><title/><link>https://slhmy.github.io/categories/project-records/readme/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://slhmy.github.io/categories/project-records/readme/</guid><description>&lt;h1 id="project-records">project-records&lt;/h1></description></item><item><title/><link>https://slhmy.github.io/categories/readme/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://slhmy.github.io/categories/readme/</guid><description>&lt;h1 id="categories">categories&lt;/h1></description></item><item><title/><link>https://slhmy.github.io/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://slhmy.github.io/</guid><description>&lt;h1 id="page">page&lt;/h1></description></item><item><title/><link>https://slhmy.github.io/p/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://slhmy.github.io/p/</guid><description>&lt;h1 id="post">post&lt;/h1></description></item><item><title/><link>https://slhmy.github.io/readme/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://slhmy.github.io/readme/</guid><description>&lt;h1 id="content">content&lt;/h1></description></item><item><title>Links</title><link>https://slhmy.github.io/links/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://slhmy.github.io/links/</guid><description>&lt;p>To use this feature, add &lt;code>links&lt;/code> section to frontmatter.&lt;/p>
+&lt;p>This page&amp;rsquo;s frontmatter:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="line">&lt;span class="cl">&lt;span class="nt">links&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">title&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">GitHub&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">description&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">GitHub is the world&amp;#39;s largest software development platform.&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">website&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">https://github.com&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">image&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">title&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">TypeScript&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">description&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">TypeScript is a typed superset of JavaScript that compiles to plain JavaScript.&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">website&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">https://www.typescriptlang.org&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">image&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">ts-logo-128.jpg&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>image&lt;/code> field accepts both local and external images.&lt;/p></description></item><item><title>Search</title><link>https://slhmy.github.io/search/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://slhmy.github.io/search/</guid><description/></item></channel></rss>

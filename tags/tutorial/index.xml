@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Tutorial on Slhmy's blog</title><link>https://slhmy.github.io/tags/tutorial/</link><description>Recent content in Tutorial on Slhmy's blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Sun, 02 Jul 2023 16:33:00 +0800</lastBuildDate><atom:link href="https://slhmy.github.io/tags/tutorial/index.xml" rel="self" type="application/rss+xml"/><item><title>快速学习Rust编程语言</title><link>https://slhmy.github.io/p/learn-rust-with-a-glance/</link><pubDate>Sun, 02 Jul 2023 16:33:00 +0800</pubDate><guid>https://slhmy.github.io/p/learn-rust-with-a-glance/</guid><description>&lt;h2 id="前言">前言&lt;/h2>
+&lt;p>写这篇Post的起因是我希望有更多的人能参与到我的开源项目中来，
+但它是用Rust写的，这让不少想要了解这项目的人无法快速加入到其中来。
+当然我也希望能通过这篇文章，能够让更多的人不再畏惧对新语言的学习。&lt;/p>
+&lt;p>老实说在半年之前，我也会经常畏惧我没有接触过的高级编程语言
+（例如：我也曾因为没接触过Go而感到困扰）。
+而现在，我已经能够快速适应多种不同高级编程语言的使用
+（请注意我说的是高级编程语言）。
+到目前为止，
+我会在不同情景下使用Go、Rust、JS/TS、C#、Python、C/C++、Java这些高级编程语言。
+之所以能够快速接触到这么多语言，我认为有一些经验是需要指出的，
+无论是在学习Rust还是任何一门其他的高级编程语言。&lt;/p>
+&lt;h3 id="如何快速入门一个新的高级编程语言">如何快速入门一个新的高级编程语言&lt;/h3>
+&lt;p>首先，如果你有过几年的编程经验，&lt;u>我不提倡为了学一门语言而去做专项的学习&lt;/u>。
+因为在没有项目参考的情况下，学习编程语言的成本是比较高的，
+这会不明所以地消耗你大量的时间。&lt;/p>
+&lt;p>你需要变得自信：&lt;u>高级编程语言本身就是人类可读的文本，基本没有理由看不懂&lt;/u>。
+会造成困扰的是它们当中&lt;strong>不同的语义符号和一些较为特殊的语言机制&lt;/strong>，
+通常来说这些不同会让你在空手进行开发时给你造成比较大的困扰，
+但如果仅是进行阅读，理解代码的逻辑含义还是较为轻松的。&lt;/p>
+&lt;p>&lt;u>丰富的RealWorld项目经历会降低学习的成本&lt;/u>。
+代码和读书虽然很接近，但也还是略有不同，
+因为写的代码层次一旦开始变得复杂，你就需要使用一些常见的方法去帮忙降低构思的复杂度，
+例如：面向对象、设计模式、函数式编程等等。
+你不一定会在所有语言中使用到它们，但实战经历会让你更方便理解和写出更好的代码。
+除此以外，项目中时常会用到扩展依赖，比如说序列化工具、数据库驱动、Web框架等，
+每个语言都有，并且用途和功能都是可以总结的。&lt;/p>
+&lt;p>最后，2023年了&lt;u>搞一个AI联想帮下忙吧&lt;/u>。
+在编写自己不熟悉的语言时，陌生的声明式和符号会让人感到懊恼。
+AI能帮助你尽可能规避类似的问题，多一份联系也是多了一份参考。&lt;/p>
+&lt;h2 id="rust快速入门">Rust快速入门&lt;/h2>
+&lt;p>进入正题，其实上面说了那么多，也是为了在这个环节尽量少说一些。
+接受下划线标注出的关键点，我认为通常来说已经足够了。
+但作为一门相对小众的语言（以及为了能让更多人了解Rust），
+我们还是不得不讨论一些细节的东西。&lt;/p>
+&lt;h3 id="rust的大致画像">Rust的大致画像&lt;/h3>
+&lt;p>以防你可能会问：“Rust有什么好的？”
+类似这样的问题，我会先简要介绍一下Rust的大致画像。&lt;/p>
+&lt;p>&lt;u>Rust是一门，性能足以和C/C++媲美的，主打&lt;strong>标准现代工程化&lt;/strong>的静态编程语言&lt;/u>，
+为了实现高效的运行效率和足够现代和安全的开发流程，
+Rust会比任何同类型的编程语言看上去更加繁琐。
+它是一个较好的C++的同类替代品，在较为基础的模块编写上，能够做到非常优秀的工程输出。
+对于不熟悉使用C++进行工程开发的人来说，
+Rust项目的工具链（cargo）更容易上手，编写的代码也不容易出错。&lt;/p>
+&lt;p>语法形式上Rust和Typescript、Scala等语言类似，
+使用这些语言的领域的程序员会更容易上手Rust。
+但同时Rust的unsafe特性又可以使其下探到系统级别的编程领域，
+这些领域也带来一批更加高级的玩法。&lt;/p>
+&lt;p>Rust的开源社区破事比较多，但也确实有不少大佬也喜欢使用Rust。&lt;/p>
+&lt;h4 id="我的项目为什么选择rust">我的项目为什么选择Rust&lt;/h4>
+&lt;p>对我来说Rust足够存粹，我可以在任何地方任何场合，快速构建Rust的项目环境
+（cargo、VSCode+插件）。
+cargo这个工具可以帮助我快速引入我想要的依赖，生成足够清晰的文档，并且做好模块划分，
+相反我对C++该如何做这些事情并不非常熟悉。
+&lt;em>对于未来参与贡献的人来说，我希望在提交代码之前就解决大部分潜在的代码问题，
+Rust足够安全的特性大幅度减轻了我的心理负担。
+（你写出来的代码通常来说只要通过编译，就不会产生任何无法追查的恶性BUG）&lt;/em>&lt;/p>
+&lt;h3 id="rust的开发工具链">Rust的开发工具链&lt;/h3>
+&lt;p>当你在阅读或者开发Rust程序时，你需要安装：&lt;/p>
+&lt;ol>
+&lt;li>rustup（包含cargo）&lt;a class="link" href="https://www.rust-lang.org/tools/install" target="_blank" rel="noopener"
+>官网地址&lt;/a>&lt;/li>
+&lt;li>VSCode/Clion + Rust插件包（包含rust-analyzer）（+tabnine/copilot）&lt;/li>
+&lt;/ol>
+&lt;p>接下来你需要掌握Cargo的使用，文档可以参考&lt;a class="link" href="https://doc.rust-lang.org/cargo/" target="_blank" rel="noopener"
+>Cargo Book&lt;/a>。
+&lt;u>你需要知道如何使用&lt;code>cargo new/build/run/test + fmt/clippy&lt;/code>的使用，其中fmt和clippy可以帮助你编写更优秀的代码&lt;/u>。&lt;/p>
+&lt;h3 id="rust的语法和特性">Rust的语法和特性&lt;/h3>
+&lt;p>&lt;a class="link" href="https://doc.rust-lang.org/book/ch03-00-common-programming-concepts.html" target="_blank" rel="noopener"
+>The Rust Programming Language&lt;/a>
+是你在感到疑惑时最优先参照的资料，这是最官方的语法教程。
+但正如我之前说的一样，我并不建议你在完全没有项目作为出发点的时候去通读这本书，
+这很消耗时间。&lt;/p>
+&lt;p>接下来我会列出一些小的章节，来解释一些你需要在入门时就习惯的的Rust语法和特性。&lt;/p>
+&lt;h4 id="common通用语法">【Common】通用语法&lt;/h4>
+&lt;p>这个章节包含的是如何申明变量，如何使用注释和循环等在其他编程语言当中也非常常见的语法。
+&lt;a class="link" href="https://doc.rust-lang.org/book/ch03-00-common-programming-concepts.html" target="_blank" rel="noopener"
+>Common Programming Concepts&lt;/a>
+和它的子章节基本就能解决所有这些问题，但我同样不建议你直接阅读这些章节，
+在我看来这些语法稀疏平常，直接阅读通常也能理解它的含义。&lt;/p>
+&lt;p>有可能会带来困扰的是声明相关的内容，不过你只需要了解下面这些就足够了。
+如果你想创建一个由名字指代的值，只要这么写就可以了：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">let (mut) {value_name}: {type} = {value}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>如你所见，类型声明的位置和其他语言是稍有区别的，显然这不是很影响理解
+&lt;code>mut&lt;/code>你可能之前并没有见过，它的意思是mutable，
+如果你想创建的时一个变量，你需要在声明时指定&lt;code>mut&lt;/code>。
+&lt;u>Rust的语法是相对繁复的，
+这种设计的目的是为了让编写的人时刻清楚，自己具体在做什么&lt;/u>。&lt;/p>
+&lt;h4 id="commonoption可选变量入门enum和模式匹配">【Common】Option可选变量（入门Enum和模式匹配）&lt;/h4>
+&lt;p>我们开始接触一些真正奇怪的东西了，
+入门Rust第一个坏消息是，你可能不会再见到&lt;code>Null&lt;/code>或者&lt;code>nil&lt;/code>了。
+（至于为什么这样可以翻阅这个章节：&lt;a class="link" href="https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html#the-option-enum-and-its-advantages-over-null-values" target="_blank" rel="noopener"
+>The Option Enum and Its Advantages Over Null Values&lt;/a>)
+不过好在这件事其实挺容易接受的，
+Option会是你在Rust当中接触的非常多的一种枚举类型：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-rust" data-lang="rust">&lt;span class="line">&lt;span class="cl">&lt;span class="k">enum&lt;/span> &lt;span class="nb">Option&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nb">None&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nb">Some&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="p">),&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>如果你掌握其他语言中泛型的使用&lt;/strong>，那么你应该不难理解上面的代码。&lt;/p>
+&lt;blockquote>
+&lt;p>如果你并不清楚什么时泛型，或者说你完全无法理解&lt;code>&amp;lt;&amp;gt;&lt;/code>，
+可以先尝试阅读
+&lt;a class="link" href="https://doc.rust-lang.org/book/ch10-00-generics.html" target="_blank" rel="noopener"
+>Generic Types, Traits, and Lifetimes&lt;/a>
+中的Generic部分，或者尝试从其他语言中获取参考，请一定记住，你只需要浅显地理解即可&lt;/p>
+&lt;/blockquote>
+&lt;p>在展开&lt;code>Option&lt;/code>包裹的值时，你只会遇到两种情况，一种是&lt;code>None&lt;/code>一种是有值的&lt;code>Some&lt;/code>。&lt;/p>
+&lt;p>&lt;strong>那么如何展开一个Enum呢？
+常见的方法有两种(&lt;code>match&lt;/code>和&lt;code>if let&lt;/code>)&lt;/strong>：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-rust" data-lang="rust">&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">let&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">config_max&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">Some&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="k">u8&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">match&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">config_max&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nb">Some&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">max&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="fm">println!&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;The maximum is configured to be &lt;/span>&lt;span class="si">{}&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">max&lt;/span>&lt;span class="p">),&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">_&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(),&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-rust" data-lang="rust">&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">let&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">config_max&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">Some&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="k">u8&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">if&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kd">let&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">Some&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">max&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">config_max&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="fm">println!&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;The maximum is configured to be &lt;/span>&lt;span class="si">{}&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">max&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>请一定尝试用自然语言的理解方式理解这些代码，我认为这些设计都是足够自然的，
+当没枚举类型不是Option时也是可以使用的。&lt;/p>
+&lt;p>通常来说，当你只专注于解开Enum当中一种情况的值时，你可以使用&lt;code>if let&lt;/code>句式，
+从而缩减代码量。&lt;/p>
+&lt;blockquote>
+&lt;p>你不需要担心无法正确地挑选&lt;code>match&lt;/code>和&lt;code>if let&lt;/code>句式，
+因为你可以在命令行中输入&lt;code>cargo clippy&lt;/code>来获取代码建议，
+如果你的&lt;code>match&lt;/code>时非常简单的双项选择，&lt;code>cargo clippy&lt;/code>会告诉你如何转换成&lt;code>if let&lt;/code>的。&lt;/p>
+&lt;/blockquote>
+&lt;p>最后，这部分的所有内容都包含在&lt;a class="link" href="https://doc.rust-lang.org/book/ch06-00-enums.html" target="_blank" rel="noopener"
+>Enums and Pattern Matching&lt;/a>下。&lt;/p>
+&lt;h4 id="commonresult错误处理的小问号">【Common】Result错误处理的小问号？&lt;/h4>
+&lt;p>接下来我们要继续认识下一个特别的枚举类型&lt;code>Result&lt;/code>。
+在进行下面的阅读之前，我认为可以提醒你一些小关键点：
+如你所见，我单独拿出来举例的都是Enum的类型，
+这可能会对读者有一定的误导，认为它们各自时特殊的类型。
+&lt;u>请记住同一种类型它们是共享同一种特性的，如&lt;code>match&lt;/code>和&lt;code>if let&lt;/code>对任何Enum都可以使用&lt;/u>&lt;/p>
+&lt;p>对Result来说可以单独拿出来讲的是&lt;code>?&lt;/code>:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-rust" data-lang="rust">&lt;span class="line">&lt;span class="cl">&lt;span class="k">use&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">std&lt;/span>::&lt;span class="n">fs&lt;/span>::&lt;span class="n">File&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">use&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">std&lt;/span>::&lt;span class="n">io&lt;/span>::&lt;span class="p">{&lt;/span>&lt;span class="bp">self&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">Read&lt;/span>&lt;span class="p">};&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">fn&lt;/span> &lt;span class="nf">read_username_from_file&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="w"> &lt;/span>-&amp;gt; &lt;span class="nb">Result&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">String&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">io&lt;/span>::&lt;span class="n">Error&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">let&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">mut&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">username_file&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">File&lt;/span>::&lt;span class="n">open&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;hello.txt&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">?&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">let&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">mut&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">username&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">String&lt;/span>::&lt;span class="n">new&lt;/span>&lt;span class="p">();&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">username_file&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">read_to_string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="k">mut&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">username&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">?&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nb">Ok&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">username&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这是Rust当中上抛错误的简易写法，&lt;strong>当上层的Result的枚举可以提取上抛的错误类型时，
+就可以使用&lt;code>?&lt;/code>来使代码在函数返回Error的枚举值的时候，直接return&lt;/strong>。&lt;/p>
+&lt;blockquote>
+&lt;p>请注意，&lt;code>?&lt;/code>的用法时可以用&lt;code>match&lt;/code>这种通用方法替代的，它就是在匹配到&lt;code>Err(_)&lt;/code>时return的含义。&lt;/p>
+&lt;/blockquote>
+&lt;h4 id="common结构体和面向对象">【Common】结构体和面向对象&lt;/h4>
+&lt;p>如果你使用过Golang这样的较为新式的编程语言，你可能已经接受了不完整的面向对象的使用。
+Rust也是如此，&lt;code>impl&lt;/code>取代了Golang中的接口，使用起来通常比传统的面向对象更加简易。&lt;/p>
+&lt;p>我认为在这一部分，你需不需要有太多的学习负担，毕竟这块设计并不是非常有特色的，
+因该能快速适应的。
+相关的章节在：&lt;a class="link" href="https://doc.rust-lang.org/book/ch05-00-structs.html" target="_blank" rel="noopener"
+>Using Structs to Structure Related Data&lt;/a>。&lt;/p>
+&lt;blockquote>
+&lt;p>对结构体的使用更多是在程序设计方面，出色的设计可以制作出优秀的代码流，可以利用到函数式编程这种优秀的编写方式。&lt;/p>
+&lt;/blockquote>
+&lt;h4 id="project模块的编排">【Project】模块的编排&lt;/h4>
+&lt;p>我非常讨厌单文本代码，代码量一旦变大，我们就需要把代码拆分成多个文件。
+这就会需要考虑我们的代码是否需要进行公开，以及如何在其他地方引用它们。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-rust" data-lang="rust">&lt;span class="line">&lt;span class="cl">&lt;span class="k">use&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">crate&lt;/span>::&lt;span class="n">garden&lt;/span>::&lt;span class="n">vegetables&lt;/span>::&lt;span class="n">Asparagus&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">pub&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">mod&lt;/span> &lt;span class="nn">garden&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">fn&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">let&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">plant&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">Asparagus&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">{};&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="fm">println!&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;I&amp;#39;m growing &lt;/span>&lt;span class="si">{:?}&lt;/span>&lt;span class="s">!&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">plant&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>你需要掌握两种标记，&lt;code>pub&lt;/code>和&lt;code>use&lt;/code>：&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>pub&lt;/code>很容易理解，就是公开模块中的某个元素（元素可以是，函数、结构体、结构体中的成员等）&lt;/li>
+&lt;li>&lt;code>use&lt;/code>用于引用我们需要使用的元素模块，其后会跟随一串路径，路径的开头可能会有些特殊的起始标记，例如&lt;code>crate&lt;/code>和&lt;code>super&lt;/code>，前者是项目的起始路径标记，后者是同级模块的相对路径起始标记。&lt;/li>
+&lt;/ul>
+&lt;p>你可以在遇到疑惑时再翻阅下面的文档&lt;a class="link" href="https://doc.rust-lang.org/book/ch07-02-defining-modules-to-control-scope-and-privacy.html?highlight=mod#modules-cheat-sheet" target="_blank" rel="noopener"
+>Managing Growing Projects with Packages, Crates, and Modules&lt;/a>&lt;/p>
+&lt;h4 id="magic生命周期">【Magic】生命周期&lt;/h4>
+&lt;p>压轴部分，也是Rust当中最难以理解的特性之一，它在教程的第三章就进行了介绍：
+&lt;a class="link" href="https://doc.rust-lang.org/book/ch04-00-understanding-ownership.html" target="_blank" rel="noopener"
+>Understanding Ownership&lt;/a>。
+Rust还有一些其他的高级用法，但生命周期是你几乎无法规避的，
+它的存在造就了Rust既块有编写安全的特征，也使代码的编写不那么顺心如意。&lt;/p>
+&lt;p>在Rust的设计当中，&lt;strong>任何非常量的值，默认只存活于它的作用域当中，且只有一个真正的实体&lt;/strong>。&lt;/p>
+&lt;p>我稍微修改了一份官方的例子，这个例子在其他编程语言中通常是能通过编译的，但是Rust不行。
+原因就是上面的规约造成的，在&lt;code>let s3 = takes_and_gives_back(s2);&lt;/code>执行时，&lt;code>s2&lt;/code>的实体已经发生了转移。&lt;/p>
+&lt;blockquote>
+&lt;p>Rust的编写过程当中，非常大部分的编译报错都是由不合法的生命周期造成的。
+对此你需要额外地进行一些适应，但请理解，这也可以帮助你在较低的关注成本下关注到每个值的分配和释放的情况。&lt;/p>
+&lt;/blockquote>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-rust" data-lang="rust">&lt;span class="line">&lt;span class="cl">&lt;span class="k">fn&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">let&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s1&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">gives_ownership&lt;/span>&lt;span class="p">();&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// gives_ownership moves its return
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// value into s1
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">let&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s2&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">String&lt;/span>::&lt;span class="n">from&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;hello&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// s2 comes into scope
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">let&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s3&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">takes_and_gives_back&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">s2&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// s2 is moved into
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// takes_and_gives_back, which also
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// moves its return value into s3
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="c1">// !!! WILL FAILED TO COMPILE !!!
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kd">let&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s4&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">takes_and_gives_back&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">s2&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// Here, s3 goes out of scope and is dropped. s2 was moved, so nothing
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// happens. s1 goes out of scope and is dropped.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">fn&lt;/span> &lt;span class="nf">gives_ownership&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="w"> &lt;/span>-&amp;gt; &lt;span class="nb">String&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// gives_ownership will move its
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// return value into the function
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// that calls it
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">let&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">some_string&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">String&lt;/span>::&lt;span class="n">from&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;yours&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// some_string comes into scope
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">some_string&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// some_string is returned and
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// moves out to the calling
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// function
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c1">// This function takes a String and returns one
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">fn&lt;/span> &lt;span class="nf">takes_and_gives_back&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">a_string&lt;/span>: &lt;span class="nb">String&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>-&amp;gt; &lt;span class="nb">String&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// a_string comes into
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// scope
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">a_string&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// a_string is returned and moves out to the calling function
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>要修复上面的编译报错也很简单，只需对s2进行拷贝即可&lt;code>let s3 = takes_and_gives_back(s2.clone());&lt;/code>。
+&lt;em>在很多语言，例如Golang和Java中这一动作是自动发生的，
+而在Rust当中，你需要在代码中体现这一个动作。&lt;/em>&lt;/p>
+&lt;h4 id="magic宏和代码生成">【Magic】宏和代码生成&lt;/h4>
+&lt;p>宏是Rust的一种高级特性，但作为入门者你不需要过于担心，我不曾深入过宏的使用，
+在这里提到宏，仅仅是因为你会在代码里看到它们，它能提供更加灵活的功能构建，为代码的编写带来便利。
+作为使用者，我通常用它完成输入输出日志、格式化字符串、添加（反）序列化、编写WebHandler等高级功能。&lt;/p>
+&lt;p>宏会以三种形式出现：&lt;/p>
+&lt;ol>
+&lt;li>&lt;code>macro_name!(...)&lt;/code> 这种宏的使用无异于函数，也叫做函数宏，只是在函数名后有&lt;code>!&lt;/code>标注，
+它能带来比函数更加灵活的使用，典型的代表就是&lt;code>format!/println!()&lt;/code>宏。&lt;/li>
+&lt;li>&lt;code>#[...]&lt;/code> 如果你接触过C#的Attribute，理解这种宏会更加简单，它叫属性宏，可以出现在非常多的代码块的头部
+（比如Enum、struct、func等，也可以出现在文件的头部）为这些代码块添加属性，可以使代码块获得额外的能力&lt;/li>
+&lt;li>&lt;code>#[derive(...)]&lt;/code> 你可以理解派生宏为一种特殊的属性宏，但它只能作用于Enum和struct之上&lt;/li>
+&lt;/ol>
+&lt;blockquote>
+&lt;p>你可以理解宏是通过某种声明实现的Rust代码的生成能力，宏在编译时会在target当中自动生成一串相应的代码，
+通常来说你不需要了解具体它们是如何生成的。&lt;/p>
+&lt;/blockquote>
+&lt;p>更多可以参考文档&lt;a class="link" href="https://doc.rust-lang.org/book/ch19-06-macros.html?highlight=macro#macros" target="_blank" rel="noopener"
+>Macros&lt;/a>&lt;/p>
+&lt;h2 id="结语">结语&lt;/h2>
+&lt;p>以上就是我认为你需要快速学习Rust所需要的全部了，
+在最后我对自己所写的内容进行一些反思。&lt;/p>
+&lt;p>我试图让Rust的具体部分变得更加地简短易懂，单我不认为我做的非常出色。
+我通过接受难易程度，对语法和特性进行了排列，但知识结构依旧显得较为平面。&lt;/p>
+&lt;p>所以在最后，我为每个小章节加上了标头，Common、Project、Magic，
+我认为在任何语言时，可以对语法和特性进行这三大块的分类，
+其中前两者通常不会带来较多的学习成本，
+而Magic是可能带来困扰，但也是真正能产生差异的部分（例如golang的协程，JS/TS的Promise等）。
+&lt;u>在消化Magic部分的内容时，请务必明白它解决的是什么样的一个问题&lt;/u>。&lt;/p>
+&lt;p>我在文章中有大量的内容提到了，我不希望各位在入门时就对特性进行过多的深挖，
+因为这是一种很消耗时间的行为，但并不是说完全拒绝类似源码阅读这样的事情。
+只是这些事情通常不应该在初学时就发生，但如果你是位相关经验较为丰富的“初学者”，
+阅读源码也是被允许的，这可能可以帮助你更好地理解一些事情。&lt;/p>
+&lt;p>(全文终)&lt;/p>
+&lt;p>😩 写的好累，希望各位喜欢 💕&lt;/p>
+&lt;p>📕 ~欢迎在评论区给我留言~ ⌨️&lt;/p></description></item></channel></rss>
