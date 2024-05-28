@@ -10,13 +10,13 @@ const navigation = [
 export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center w-screen h-screen overflow-hidden bg-black">
-      <nav className="my-12 animate-fade-in">
+      <nav className="z-10 my-12 animate-fade-in">
         <ul className="flex items-center justify-center gap-8">
           {navigation.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="z-10 text-xl duration-500 text-zinc-500 hover:text-zinc-300"
+              className="text-xl duration-500 text-zinc-500 hover:text-zinc-300"
             >
               {item.name}
             </Link>
